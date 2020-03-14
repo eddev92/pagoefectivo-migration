@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'cadmin/css/style.css' %}">
+</head>
+
+<body>
+  <div class="pagina" >
+    <!--página inicio-->
+    
+      <div class="barraTitulo" >
+      <!--barraTítulo inicio-->
+        <div class="alineado margenIzquierdo10 margenSuperior10" ><img src="{% static 'cadmin/img/logoPagoEfectivo.png' %}" /></div>
+        <div class="lineaSeparadoraVertical alineado margenIzquierdo20" ></div>
+        <div class="titulo alineado" >Configuración: "Pasarela de PagoEfectivo"</div>
+      </div>
+      <!--barraTítulo fin-->
+      
+      <div class="barraMenu" ><!--barraMenu inicio-->
+    
+      <div class="itemMenu margenIzquierdo5 margenSuperior20" >CÓDIGO DE PAGO</div>
+    
+      <div class="itemMenu" >
+      <img src="{% static 'cadmin/img/vinetaCruz.png' %}" class="vinetaItemMenu alineado margenIzquierdo10 margenSuperior5" />
+      <div class="alineado margenIzquierdo5 margenSuperior5" ><a href="{% url 'home' %}">Generar CIP</a></div>
+      </div>
+    
+      <div class="itemMenu" >
+      <img src="{% static 'cadmin/img/vinetaSiguiente.png' %}" class="vinetaItemMenu alineado margenIzquierdo10 margenSuperior5" />
+      <div class="alineado margenIzquierdo5 margenSuperior5" ><a href="{% url 'notification' %}">Notificación CIP</a></div>	
+      </div>
+    
+      <div class="itemMenuPie" >	
+      <img src="{% static 'cadmin/img/vinetaAyuda.png' %}" class="vinetaItemMenuPie alineado margenIzquierdo10 margenSuperior5" />
+      <div class=" alineado margenIzquierdo5 margenSuperior5" ><a href="https://centraldeayuda.pagoefectivo.pe/hc/es">Ayuda</a></div>
+      </div>
+      
+      <div class="itemMenuPie itemMenuSeleccionado" >			
+      <img src="{% static 'cadmin/img/vinetaConfiguracion.png' %}" class="vinetaItemMenuPie alineado margenIzquierdo10 margenSuperior5" />			
+      <div class="alineado margenIzquierdo5 margenSuperior5" ><a href="{% url 'configuration' %}">Configuración</a></div>			
+      </div>
+      
+        <div class="siguienteLinea lineaMenu" ></div>	
+        
+      <div class="alineado" >	
+      <img src="{% static 'cadmin/img/vinetaAtras.png' %}" class="vinetaInferiorDerechaMenuPie alineado" />
+      </div>
+      
+      </div><!--barraMenu fin-->
+    
+      <div class="cuerpo" ><!--cuerpo inicio-->
+      
+      <div id="accionMensaje" ></div>
+      
+      <form action="" method="post" name="configuraFormulario" id="configuraFormulario" autocomplete="off" >
+        {% csrf_token %}
+        {{ form }}
+        <div class="siguienteLinea margenInferior5" >
+        <div class="etiqueta" >Servidor PagoEfectivo (*)</div>
+        <input name="ServidorPagoEfectivo" id="ServidorPagoEfectivo" value="" 
+        type="text" class="cajaTexto ancho500" placeholder="Url del servidor de PagoEfectivo (Testing/ Producción)" required />
+        <div id="ServidorPagoEfectivoMensaje" class="mensajeRequerido" >Es requerido</div>		
+        </div>
+        
+        <div class="siguienteLinea margenInferior5" >
+        <div class="etiqueta" >AccessKey (*)</div>
+        <input name="AccessKey" id="AccessKey" value=""
+        type="text" class="cajaTexto ancho500" placeholder="AccessKey del servidor de PagoEfectivo (Testing/ Producción)" required />	
+        <div id="AccessKeyMensaje" class="mensajeRequerido" ></div>		
+        </div>
+        
+        <div class="siguienteLinea margenInferior5" >
+        <div class="etiqueta" >SecretKey (*)</div>
+        <input name="SecretKey" id="SecretKey" value="" 
+        type="text" class="cajaTexto ancho500" placeholder="SecretKey del servidor de PagoEfectivo (Testing/ Producción)" required />	
+        <div id="SecretKeyMensaje" class="mensajeRequerido" ></div>
+        </div>
+        
+          <hr class="lineaSeparadoraHorizontal" />
+          <br/>
+    
+        <div class="siguienteLinea margenInferior5" >			
+        <div class="etiqueta" >ID del Comercio (*)</div>
+        <input name="IDComercio" id="IDComercio" value=""  
+        type="text" class="cajaTexto ancho500" placeholder="Ingresa tu ID" required />	
+        <div id="IDComercioMensaje" class="mensajeRequerido" ></div>		
+        </div>
+        
+        <div class="siguienteLinea margenInferior5" >
+        <div class="etiqueta" >Nombre del Comercio (*)</div>
+        <input name="NombreComercio" id="NombreComercio" value="" 
+        type="text" class="cajaTexto ancho500" placeholder="Nombre del comercio para el concepto de pago" required />	
+        <div id="NombreComercioMensaje" class="mensajeRequerido" ></div>		
+        </div>
+        
+        <div class="siguienteLinea margenInferior5" >
+        <div class="etiqueta" >Email del Comercio (*)</div>
+        <input name="EmailComercio" id="EmailComercio" value="" 
+        type="text" class="cajaTexto ancho500" placeholder="Email del comercio para envío de comunicaciones" required />	
+        <div id="EmailComercioMensaje" class="mensajeRequerido" ></div>		
+        </div>
+        
+          <hr class="lineaSeparadoraHorizontal" />
+          <br/>
+    
+        <div class="siguienteLinea margenInferior5" >
+        <div class="etiqueta" >Modo de Integración (*)</div>
+        <select name="ModoIntegracion" id="ModoIntegracion" class="combo ancho500" required >
+            <option value="" disabled selected hidden >Selecciona la modalidad de integración</option>
+            <option value="IFR" >Iframe</option>
+            <option value="RED" >Redirecciona</option>			
+        </select>
+        <div  id="ModoIntegracionMensaje" class="mensajeRequerido" ></div>		
+        </div>
+        
+        <div class="siguienteLinea margenInferior5" >
+        <div class="etiqueta" >Tiempo de expiración del Pago (*)</div>
+        <div class="alineado " >
+        <input name="TiempoExpiracionPago" id="TiempoExpiracionPago" value="" 
+        class="cajaTexto ancho300" placeholder="000" required /><div class="mensajePlaceholder" >Horas</div>	
+        <div id="TiempoExpiracionPagoMensaje" class="mensajeRequeridoAlterno" >Es requerido</div>	</div>
+        </div>
+        
+        <div class="siguienteLinea margenInferior5" >		
+        <div class="etiqueta" >País (*)</div>
+        <select name="Pais" id="Pais"  class="combo ancho500" required >
+            <option value="" disabled selected hidden >País del servicio</option>
+            <option value="PER" >Perú</option>
+            <option value="ECU" >Ecuador</option>		
+        </select>
+        <div id="PaisMensaje" class="mensajeRequerido" ></div>		
+        </div>
+        
+        <div class="alineado margenInferior5" >
+        <div class="etiqueta" >Tipo de moneda (*)</div>
+        <select name="TipoMoneda" id="TipoMoneda" class="combo ancho200" required >
+        <option value="" disabled selected hidden >Moneda de recaudación</option>
+        <option value="PEN" >Soles</option>
+        <option value="USD" >Dólares</option>
+        </select>
+        <div id="TipoMonedaMensaje" class="mensajeRequerido" ></div>	
+        </div>
+        
+        <div class="alineado margenIzquierdo100 margenInferior5" >
+        <div class="etiqueta"  >Monto (*)</div>
+        <input name="Monto" id="Monto" value="" 
+        type="text" class="cajaTexto ancho200" placeholder="" required />			
+        <div id="MontoMensaje" class="mensajeRequerido" ></div>
+        </div>
+        
+        <div class="siguienteLinea" >
+        
+        <div class="alineado margenIzquierdo40 " >
+        <button id="btnCancelar" name="btnCancelar" type="button" class="botonSecundario ancho150 margenSuperior30" >Limpiar</button>			
+        </div>		
+        
+        <div class="alineado margenIzquierdo150 " >
+        <button id="btnGuardar" type="submit" class="botonPrincipal ancho150 margenSuperior30" >Guardar</button>			
+        </div>	
+        
+        </div>
+      
+      </form>
+      </div><!--cuerpo fin-->		
+      
+    </div><!--página fin-->
+</body>
+
+</html>

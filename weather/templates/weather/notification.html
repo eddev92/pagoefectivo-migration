@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'cadmin/css/style.css' %}">
+</head>
+
+<body>
+  <div class="pagina" >
+
+    <div class="barraTitulo" ><!--barraTítulo inicio-->
+      <div class="alineado margenIzquierdo10 margenSuperior10" ><img src="{% static 'cadmin/img/logoPagoEfectivo.png' %}" /></div>
+      <div class="lineaSeparadoraVertical alineado margenIzquierdo20" ></div>
+      <div class="titulo alineado" >Notificación CIP</div>
+    </div><!--barraTítulo fin-->
+    
+    <div class="barraMenu" ><!--barraMenu inicio-->
+  
+    <div class="itemMenu margenIzquierdo5 margenSuperior20" >CÓDIGO DE PAGO</div>
+  
+    <div class="itemMenu" >
+    <img src="{% static 'cadmin/img/vinetaCruz.png' %}" class="vinetaItemMenu alineado margenIzquierdo10 margenSuperior5" />
+    <div class="alineado margenIzquierdo5 margenSuperior5" ><a href="{% url 'home' %}">Generar CIP</a></div>
+    </div>
+  
+    <div class="itemMenu itemMenuSeleccionado" >
+    <img src="{% static 'cadmin/img/vinetaSiguiente.png' %}" class="vinetaItemMenu alineado margenIzquierdo10 margenSuperior5" />
+    <div class="alineado margenIzquierdo5 margenSuperior5" ><a href="{% url 'notification' %}">Notificación CIP</a></div>	
+    </div>
+  
+    <div class="itemMenuPie" >	
+    <img src="{% static 'cadmin/img/vinetaAyuda.png' %}" class="vinetaItemMenuPie alineado margenIzquierdo10 margenSuperior5" />
+    <div class=" alineado margenIzquierdo5 margenSuperior5" ><a href="https://centraldeayuda.pagoefectivo.pe/hc/es">Ayuda</a></div>
+    </div>
+    
+    <div class="itemMenuPie " >			
+    <img src="{% static 'cadmin/img/vinetaConfiguracion.png' %}" class="vinetaItemMenuPie alineado margenIzquierdo10 margenSuperior5" />			
+    <div class="alineado margenIzquierdo5 margenSuperior5" ><a href="{% url 'configuration' %}">Configuración</a></div>			
+    </div>
+    
+      <div class="siguienteLinea lineaMenu" ></div>	
+      
+    <div class="alineado" >	
+    <img src="{% static 'cadmin/img/vinetaAtras.png' %}" class="vinetaInferiorDerechaMenuPie alineado" />
+    </div>
+    
+    </div><!--barraMenu fin-->
+  
+    <div class="cuerpo" ><!--cuerpo inicio-->
+    
+      <div id="accionMensaje" class="mensajeIncorrecto">El PE-Signature es incorrecto</div>
+      <div id="accionMensaje" class="mensajeCorrecto">El PE-Signature es correcto</div>
+      <form id="notificaFormulario" method="post" action=""  >
+        {% csrf_token %}
+        {{ form }}
+      <div class="siguienteLinea margenInferior5" >
+      <div class="etiqueta" >PE-Signature (*)</div>
+      <!-- <input id="PE-Signature" name="PE-Signature" 
+      value="<?=(isset($notifica['PE-Signature']) && array_key_exists('PE-Signature', $notifica) ? $notifica['PE-Signature'] : '' );  ?>"
+      type="text" class="cajaTexto ancho500" placeholder="Data" /> -->
+
+      <input id="PE-Signature" name="PE-signature" type="text" class="cajaTexto ancho500" placeholder="Data">
+
+      <div id="PE-SignatureMensaje" class="mensajeRequerido" ></div>		
+      </div>
+      
+      <div class="siguienteLinea margenInferior5" >
+      <div class="etiqueta" >Request Body (*)</div>
+
+      <textarea id="requestBody" name="requestBody" type="text" class="cajaTexto ancho500 alto150" placeholder="Data" >{"eventType" : "","operationNumber" : "","data" : {"cip" : "","currency" : "","amount" : ""}}</textarea>	
+      <div id="requestBodyMensaje" class="mensajeRequerido" ></div>		
+      </div>
+    
+      <div class="siguienteLinea" >
+      <div class="alineado margenIzquierdo40 " >
+      <button id="btnLimpiar" name="btnLimpiar" type="button" class="botonSecundario ancho150 margenSuperior30" >Limpiar</button>			
+      </div>		
+      
+      <div class="alineado margenIzquierdo150 " >
+      <button id="btnValidar" type="submit" class="botonPrincipal ancho150 margenSuperior30" >Validar</button>			
+      </div>	
+      
+      </div>	
+  
+  </form>	
+    
+  </div><!--cuerpo fin-->		
+    
+  </div><!--página fin-->
+</body>
+
+</html>
