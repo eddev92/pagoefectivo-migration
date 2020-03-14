@@ -21,6 +21,10 @@ class Notification(models.Model):
     Pais = models.CharField(max_length=25)
     TipoMoneda = models.CharField(max_length=25)
     Monto = models.CharField(max_length=25)
+    TiempoExpiracionPago = models.CharField(max_length=25)
+    TipoMoneda = models.CharField(max_length=25)
+    Monto = models.CharField(max_length=25)
+    Pais = models.CharField(max_length=25)
 
     def __str__(self):
         return self,

@@ -7,12 +7,17 @@ background: #aaaaaa;
 font-family: Roboto, Arial, Verdana, Sans-serif;
 }
 
+#id_ServidorPagoEfectivo.input.hidden {
+  display: none !important;
+}
 textarea, input, button, select 
 { 
 font-family: inherit; 
 font-size: inherit; 
 }
-
+.showSave {
+  display: none;
+}
 .pagina
 {
 position:absolute;

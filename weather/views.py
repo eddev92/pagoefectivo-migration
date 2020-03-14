@@ -3,8 +3,10 @@ from django.shortcuts import render
 from .models import City, Notification
 from .forms import CityForm, ConfigurationForm
 from django.core import serializers
+from django.template import RequestContext
 import http.client
 import json
+from django.http import HttpResponseRedirect
 from bs4 import BeautifulSoup
 
 def index(request):
@@ -12,28 +14,27 @@ def index(request):
     return render(request, 'weather/weather.html', context)
 
 def indexNotification(request):
-    isCorrect = False
     context = {}
     if request.method == "POST":
         form = CityForm(request.POST)
-        # print(request, "request aqui")
-        if form.is_valid:
-            print(form.is_valid, "DSADAS")
-            print(form, "JSON")
-            context = {form: form}
-        #     print(context, "context")
+
     return render(request, 'weather/notification.html', context)
 
 def indexConfiguration(request):
+    countValue9 = ""
+    response = {}
+    value7 = ''
+    emptyVal = ''
+    isCorrect = 0
     context = {}
+    form = ConfigurationForm(request.POST)
     if request.method == "POST":
         print(request, "REQUEST")
-        form = ConfigurationForm(request.POST)
         if form.is_valid():
+            # form.save()
             conn = http.client.HTTPSConnection('www.httpbin.org')
             headers = {'Content-type': 'application/json'}
-            # print(form['ServidorPagoEfectivo'].value, "ServidorPagoEfectivo value")
-            aux = str(form)
+
             aux1 = str(form.__getitem__('ServidorPagoEfectivo'))
             aux2 = str(form.__getitem__('AccessKey'))
             aux3 = str(form.__getitem__('SecretKey'))
@@ -45,7 +46,7 @@ def indexConfiguration(request):
             aux9 = str(form.__getitem__('Pais'))
             aux10 = str(form.__getitem__('TipoMoneda'))
             aux11 = str(form.__getitem__('Monto'))
-            # print(str(form.__getitem__('ServidorPagoEfectivo')))
+
             soup = BeautifulSoup(aux1)
             soup2 = BeautifulSoup(aux2)
             soup3 = BeautifulSoup(aux3)
@@ -57,9 +58,7 @@ def indexConfiguration(request):
             soup9 = BeautifulSoup(aux9)
             soup10 = BeautifulSoup(aux10)
             soup11 = BeautifulSoup(aux11)
-            print(soup7.prettify())
 
-            print(soup.prettify(), "prettify")
             value1 = soup.find('input').get('value')
             print(value1, "value1")
             value2 = soup2.find('input').get('value')
@@ -82,10 +81,8 @@ def indexConfiguration(request):
             print(value10, "value10")
             value11 = soup11.find('input').get('value')
             print(value11, "value11")
+            countValue9 = str(value9)
             
-
-            # value2 = soup.find(id='AccessKey').get('value')
-            # print(value2, "value2")
             body = {
                         "ServidorPagoEfectivo": value1,
                         "AccessKey":value2,
@@ -100,17 +97,19 @@ def indexConfiguration(request):
                         "Monto":value11
                     }
             print(body, "body")
-            foo = {'text': aux}
             json_data = json.dumps(body)
             conn.request('POST', '/post', json_data, headers)
-            
+            print(form, "form")
+            context = { 'form': form }
+
             response = conn.getresponse()
             if response.status == 200:
-                isCorrect = True
+                isCorrect = 1
                 print(response.read().decode(), "response POST")
             else:
-                isCorrect = False
+                isCorrect = 2
             print(isCorrect, "isCorrect")
             conn.close()
-
+    print(isCorrect, "isCorrect")
+    print(countValue9, "countValue9")
     return render(request, 'weather/configuration.html', context)

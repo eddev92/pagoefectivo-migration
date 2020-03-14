@@ -6,7 +6,7 @@ class CityForm(ModelForm):
     class Meta:
         model = City 
         fields = ['requestBody']
-        widgets = {'requestBody' : TextInput(attrs={'class' : 'input'})}
+        widgets = {'requestBody' : TextInput(attrs={'class' : 'input hidden'})}
 
 class ConfigurationForm(ModelForm):
     class Meta:
@@ -23,15 +23,16 @@ class ConfigurationForm(ModelForm):
                   'TipoMoneda',
                   'Monto'
                   ]
-        widgets = {'ServidorPagoEfectivo' : TextInput(attrs={'class' : 'input'}),
-                    'AccessKey' : TextInput(attrs={'class' : 'input'}),
-                    'SecretKey' : TextInput(attrs={'class' : 'input'}),
-                    'IDComercio' : TextInput(attrs={'class' : 'input'}),
-                    'NombreComercio' : TextInput(attrs={'class' : 'input'}),
-                    'EmailComercio' : TextInput(attrs={'class' : 'input'}),
-                    'ModoIntegracion' : TextInput(attrs={'class' : 'input'})
+        widgets = {
+                    'ServidorPagoEfectivo' : TextInput(attrs={'class' : 'input hidden', "type" : "hidden"}),
+                    'AccessKey' : TextInput(attrs={'class' : 'input hidden', "type" : "hidden"}),
+                    'SecretKey' : TextInput(attrs={'class' : 'input hidden', "type" : "hidden"}),
+                    'IDComercio' : TextInput(attrs={'class' : 'input hidden', "type" : "hidden"}),
+                    'NombreComercio' : TextInput(attrs={'class' : 'input hidden', "type" : "hidden"}),
+                    'EmailComercio' : TextInput(attrs={'class' : 'input hidden', "type" : "hidden"}),
+                    'ModoIntegracion' : TextInput(attrs={'class' : 'input hidden', "type" : "hidden"}),
+                    'TiempoExpiracionPago' : TextInput(attrs={'class' : 'input hidden', "type" : "hidden"}),
+                    'TipoMoneda' : TextInput(attrs={'class' : 'input hidden', "type" : "hidden"}),
+                    'Monto' : TextInput(attrs={'class' : 'input hidden', "type" : "hidden"}),
+                    'Pais' : TextInput(attrs={'class' : 'input hidden', "type" : "hidden"})
                     }
-        # ServidorPagoEfectivo = forms.CharField(max_length=25,
-        # widget=forms.TextInput(
-        #     attrs={'class': 'mensajeRequeridoModel', 'placeholder': 'IONGRESAA'}
-        # ))

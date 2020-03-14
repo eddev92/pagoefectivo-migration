@@ -54,30 +54,35 @@
       
       </div><!--barraMenu fin-->
     
-      <div class="cuerpo" ><!--cuerpo inicio-->
-      
-      <div id="accionMensaje" ></div>
-      
-      <form action="" method="post" name="configuraFormulario" id="configuraFormulario" autocomplete="off" >
+      <div class="cuerpo" ><!--cuerpo inicio--> 
+     {% if isCorrect == 0  %} 
+     <div id="accionMensaje" class="mensajeCorrecto showSave">La configuración se guardó satisfactoriamente</div>
+     {% endif %}
+ 
+      <form action="/configuration/" method="post" name="configuraFormulario" id="configuraFormulario" autocomplete="off" >
         {% csrf_token %}
-        {{ form }}
+        {{form}}
         <div class="siguienteLinea margenInferior5" >
+          
+ 
+
         <div class="etiqueta" >Servidor PagoEfectivo (*)</div>
-        <input name="ServidorPagoEfectivo" id="ServidorPagoEfectivo" value="" 
+        
+        <input name="ServidorPagoEfectivo" id="ServidorPagoEfectivo" value="{{ form.ServidorPagoEfectivo.value }}"
         type="text" class="cajaTexto ancho500" placeholder="Url del servidor de PagoEfectivo (Testing/ Producción)" required />
-        <div id="ServidorPagoEfectivoMensaje" class="mensajeRequerido" >Es requerido</div>		
+        <div id="ServidorPagoEfectivoMensaje" class="mensajeRequerido" ></div>		
         </div>
         
         <div class="siguienteLinea margenInferior5" >
         <div class="etiqueta" >AccessKey (*)</div>
-        <input name="AccessKey" id="AccessKey" value=""
+        <input name="AccessKey" id="AccessKey" value="{{ form.AccessKey.value }}"
         type="text" class="cajaTexto ancho500" placeholder="AccessKey del servidor de PagoEfectivo (Testing/ Producción)" required />	
         <div id="AccessKeyMensaje" class="mensajeRequerido" ></div>		
         </div>
         
         <div class="siguienteLinea margenInferior5" >
         <div class="etiqueta" >SecretKey (*)</div>
-        <input name="SecretKey" id="SecretKey" value="" 
+        <input name="SecretKey" id="SecretKey" value="{{ form.SecretKey.value }}" 
         type="text" class="cajaTexto ancho500" placeholder="SecretKey del servidor de PagoEfectivo (Testing/ Producción)" required />	
         <div id="SecretKeyMensaje" class="mensajeRequerido" ></div>
         </div>
@@ -87,21 +92,21 @@
     
         <div class="siguienteLinea margenInferior5" >			
         <div class="etiqueta" >ID del Comercio (*)</div>
-        <input name="IDComercio" id="IDComercio" value=""  
+        <input name="IDComercio" id="IDComercio" value="{{ form.IDComercio.value }}"  
         type="text" class="cajaTexto ancho500" placeholder="Ingresa tu ID" required />	
         <div id="IDComercioMensaje" class="mensajeRequerido" ></div>		
         </div>
         
         <div class="siguienteLinea margenInferior5" >
         <div class="etiqueta" >Nombre del Comercio (*)</div>
-        <input name="NombreComercio" id="NombreComercio" value="" 
+        <input name="NombreComercio" id="NombreComercio" value="{{ form.NombreComercio.value }}" 
         type="text" class="cajaTexto ancho500" placeholder="Nombre del comercio para el concepto de pago" required />	
         <div id="NombreComercioMensaje" class="mensajeRequerido" ></div>		
         </div>
         
         <div class="siguienteLinea margenInferior5" >
         <div class="etiqueta" >Email del Comercio (*)</div>
-        <input name="EmailComercio" id="EmailComercio" value="" 
+        <input name="EmailComercio" id="EmailComercio" value="{{ form.EmailComercio.value }}" 
         type="text" class="cajaTexto ancho500" placeholder="Email del comercio para envío de comunicaciones" required />	
         <div id="EmailComercioMensaje" class="mensajeRequerido" ></div>		
         </div>
@@ -112,7 +117,17 @@
         <div class="siguienteLinea margenInferior5" >
         <div class="etiqueta" >Modo de Integración (*)</div>
         <select name="ModoIntegracion" id="ModoIntegracion" class="combo ancho500" required >
-            <option value="" disabled selected hidden >Selecciona la modalidad de integración</option>
+            <option value="{{form.ModoIntegracion.value}}" disabled selected hidden >
+              {% if form.ModoIntegracion.value == "" %}
+              SELECCIONA PAIS
+            {% endif %}
+              {% if form.ModoIntegracion.value == 'IFR' %}
+                Iframe
+              {% endif %}
+              {% if form.ModoIntegracion.value == "RED" %}
+                Redirecciona
+              {% endif %}
+            </option>
             <option value="IFR" >Iframe</option>
             <option value="RED" >Redirecciona</option>			
         </select>
@@ -122,15 +137,25 @@
         <div class="siguienteLinea margenInferior5" >
         <div class="etiqueta" >Tiempo de expiración del Pago (*)</div>
         <div class="alineado " >
-        <input name="TiempoExpiracionPago" id="TiempoExpiracionPago" value="" 
+        <input name="TiempoExpiracionPago" id="TiempoExpiracionPago" value="{{ form.TiempoExpiracionPago.value }}" 
         class="cajaTexto ancho300" placeholder="000" required /><div class="mensajePlaceholder" >Horas</div>	
-        <div id="TiempoExpiracionPagoMensaje" class="mensajeRequeridoAlterno" >Es requerido</div>	</div>
+        <div id="TiempoExpiracionPagoMensaje" class="mensajeRequeridoAlterno" ></div>	</div>
         </div>
         
         <div class="siguienteLinea margenInferior5" >		
         <div class="etiqueta" >País (*)</div>
-        <select name="Pais" id="Pais"  class="combo ancho500" required >
-            <option value="" disabled selected hidden >País del servicio</option>
+        <select name="Pais" id="Pais"  class="combo ancho500" required  placeholder="Selecciona"> 
+              <option value="{{form.Pais.value}}" disabled selected hidden>
+                {% if countValue9 == "" %}
+                  SELECCIONA PAIS
+                {% endif %}
+                {% if form.Pais.value == "PER" %}
+                  Perú
+                {% endif %}
+                {% if form.Pais.value == "ECU" %}
+                  Ecuador
+                {% endif %}
+              </option>
             <option value="PER" >Perú</option>
             <option value="ECU" >Ecuador</option>		
         </select>
@@ -140,7 +165,17 @@
         <div class="alineado margenInferior5" >
         <div class="etiqueta" >Tipo de moneda (*)</div>
         <select name="TipoMoneda" id="TipoMoneda" class="combo ancho200" required >
-        <option value="" disabled selected hidden >Moneda de recaudación</option>
+        <option value="{{form.TipoMoneda.value}}" disabled selected hidden >
+          {% if form.TipoMoneda.value == "" %}
+            Moneda de recaudación
+          {% endif %}
+          {% if form.TipoMoneda.value == "PEN" %}
+            Soles
+          {% endif %}
+          {% if form.TipoMoneda.value == "USD" %}
+            Dólares
+          {% endif %}
+        </option>
         <option value="PEN" >Soles</option>
         <option value="USD" >Dólares</option>
         </select>
@@ -149,7 +184,7 @@
         
         <div class="alineado margenIzquierdo100 margenInferior5" >
         <div class="etiqueta"  >Monto (*)</div>
-        <input name="Monto" id="Monto" value="" 
+        <input name="Monto" id="Monto" value="{{ form.Monto.value }}" 
         type="text" class="cajaTexto ancho200" placeholder="" required />			
         <div id="MontoMensaje" class="mensajeRequerido" ></div>
         </div>
