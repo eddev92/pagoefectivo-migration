@@ -16,19 +16,27 @@ def index(request):
     body = {}
     countryLoaded = ""
     montoLoaded = ""
+    currencyLoaded = ""
+
+    
+    if request.COOKIES.get('TipoMoneda'):
+        currencyLoaded  = request.COOKIES['TipoMoneda']
+        print(currencyLoaded, "currencyLoaded")
+    
+    
+    if request.COOKIES.get('Monto'):
+        montoLoaded  = request.COOKIES['Monto']
+        print(montoLoaded, "montoLoaded")
+
     if request.method == "GET":
         print("GET HOME")
         if request.COOKIES.get('pais'):
             countryLoaded  = request.COOKIES['pais']
     
-        if request.COOKIES.get('Monto'):
-            montoLoaded  = request.COOKIES['Monto']
-            print(montoLoaded, "montoLoaded")
-    
     if request.method == 'POST':
         body = {
-                "currency": 0,
-                "amount": 0,
+                "currency": currencyLoaded,
+                "amount": montoLoaded,
                 "transactionCode": "208",
                 "dateExpiry": "",
                 "paymentConcept": "Prueba 200",
