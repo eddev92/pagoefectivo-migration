@@ -368,6 +368,7 @@ def indexConfiguration(request):
                 value11 = parse11.find('input').get('value')
 
                 print(value9, "value9")
+                print(countryLoaded, "countryLoaded")
                 context = {
                     'key_filed': isSaved,
                     "ServidorPagoEfectivoLoaded": value1,
@@ -392,9 +393,20 @@ def indexConfiguration(request):
                 response.set_cookie('EmailComercio', value6)
                 response.set_cookie('TiempoExpiracionPago', value7)
                 response.set_cookie('Monto', value8)
-                response.set_cookie('pais', value9)
-                response.set_cookie('TipoMoneda', value10)
-                response.set_cookie('ModoIntegracion', value11)
+                if value9:
+                    response.set_cookie('pais', value9)
+                else:
+                    response.set_cookie('pais', countryLoaded)
+
+                if value10:
+                    response.set_cookie('TipoMoneda', value10)
+                else:
+                    response.set_cookie('TipoMoneda', TipoMonedaLoaded)
+
+                if value11:
+                    response.set_cookie('ModoIntegracion', value11)
+                else:
+                    response.set_cookie('ModoIntegracion', ModoIntegracionLoaded)
                 # response.set_cookie('ModoIntegracion', value7)
                 return response
             else:
