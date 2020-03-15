@@ -69,7 +69,6 @@
             <div class="seccionTitulo ancho750 margenIzquierdo40 alineado" >
             Métodos de Pago
             </div>
-    
             <div class="seccionTitulo ancho300 margenIzquierdo40 alineado" >
             <div class="alineado" >Resumen de Compra</div>
             <img src="{% static 'cadmin/img/vinetaCarritoCompra.png' %}" class="margenIzquierdo120 alineado" />
@@ -136,6 +135,7 @@
                     <!-- fin de fila1 -->
                 
                     <!-- fila2 -->
+                    {% if country == "PER" %}
                     <div class="siguienteLinea margenIzquierdo20 margenSuperior10">
                         <div class="alineado ancho20" >
                         <img src="{% static 'cadmin/img/vinetaCheck.png' %}" class="margenIzquierdo5 margenSuperior5" />
@@ -146,9 +146,11 @@
                         en cualquier agente o agencia autorizada a nivel nacional a la cuenta de PagoEfectivo <span class="enlace"  >¿Cómo funciona?</span>
                         </div>
                     </div>
+                    {% endif %}
                     <!-- fin de fila2 -->
                     
                     <!-- fila3 -->
+                    {% if country == "PER" %}
                     <div class="siguienteLinea margenIzquierdo20 margenSuperior80" >
                         <div class="alineado ancho20" >
                         <img src="{% static 'cadmin/img/vinetaCheck.png' %}" class="margenIzquierdo5 margenSuperior5" />
@@ -159,9 +161,11 @@
                          <span class="enlace"  >¿Cómo funciona?</span>
                         </div>				
                     </div>
+                    {% endif %}
                     <!-- fin de fila3 -->				
     
                     <!-- fila4 -->
+                    {% if country == "PER" %}
                     <div class="siguienteLinea margenIzquierdo20">
                         <div class="alineado ancho20 margenSuperior20" >
                         <img src="{% static 'cadmin/img/vinetaAsterisco.png' %}" class="margenIzquierdo5 margenSuperior5" />
@@ -181,11 +185,13 @@
                         <img src="{% static 'cadmin/img/cajaarequipa.png' %}" class="margenIzquierdo5 margenSuperior10" />
                         <img src="{% static 'cadmin/img/disashop.png' %}" class="margenIzquierdo5 margenSuperior10" />
                         </div>
-                    </div>				
+                    </div>
+                    {% endif %}		
                     <!-- fin de fila4 -->			
                     <!-- Fin de Contenido Perú -->
                 
                     <!-- fila5 -->
+                    {% if country == "ECU" %}
                     <div class="siguienteLinea margenIzquierdo20 margenSuperior10">
                         <div class="alineado ancho20" >
                         <img src="{% static 'cadmin/img/vinetaCheck.png' %}" class="margenIzquierdo5 margenSuperior5" />
@@ -195,6 +201,7 @@
                         Facilito y Almacenes TIA a nivel nacional  <span class="enlace"  >¿Cómo funciona?</span>
                         </div>
                     </div>
+                    {% endif %}
                     <!-- fin de fila5 -->
                     
                     <!-- fila6 -->

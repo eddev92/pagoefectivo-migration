@@ -1,16 +1,20 @@
 from django.forms import ModelForm, TextInput
 from django import forms
-from .models import City, Notification
+from .models import Notification, Configuration
 
-class CityForm(ModelForm):
+class NotificationForm(ModelForm):
     class Meta:
-        model = City 
-        fields = ['requestBody']
-        widgets = {'requestBody' : TextInput(attrs={'class' : 'input hidden'})}
+        model = Notification
+        fields = ['requestBody', 'signature']
+        widgets = {
+            'requestBody' : TextInput(attrs={'class' : 'input hidden', "type" : "hidden"}),
+            'signature' : TextInput(attrs={'class' : 'input hidden', "type" : "hidden"})
+            }
+
 
 class ConfigurationForm(ModelForm):
     class Meta:
-        model = Notification 
+        model = Configuration 
         fields = ['ServidorPagoEfectivo',
                   'AccessKey',
                   'SecretKey',

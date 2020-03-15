@@ -9,22 +9,25 @@ class City(models.Model):
     class Meta:
         verbose_name_plural = 'cities'
 
-class Notification(models.Model):
-    ServidorPagoEfectivo = models.CharField(max_length=25)
-    AccessKey = models.CharField(max_length=25)
-    SecretKey = models.CharField(max_length=25)
-    IDComercio = models.CharField(max_length=25)
-    NombreComercio = models.CharField(max_length=25)
-    EmailComercio = models.CharField(max_length=25)
-    ModoIntegracion = models.CharField(max_length=25)
-    TiempoExpiracionPago = models.CharField(max_length=25)
-    Pais = models.CharField(max_length=25)
-    TipoMoneda = models.CharField(max_length=25)
-    Monto = models.CharField(max_length=25)
-    TiempoExpiracionPago = models.CharField(max_length=25)
-    TipoMoneda = models.CharField(max_length=25)
-    Monto = models.CharField(max_length=25)
-    Pais = models.CharField(max_length=25)
+class Configuration(models.Model):
+    ServidorPagoEfectivo = models.CharField(max_length=25,default='')
+    AccessKey = models.CharField(max_length=25,default='')
+    SecretKey = models.CharField(max_length=25,default='')
+    IDComercio = models.CharField(max_length=25,default='')
+    NombreComercio = models.CharField(max_length=25,default='')
+    EmailComercio = models.CharField(max_length=25,default='')
+    ModoIntegracion = models.CharField(max_length=25,default='')
+    TiempoExpiracionPago = models.CharField(max_length=25,default='')
+    Pais = models.CharField(max_length=25,default='')
+    TipoMoneda = models.CharField(max_length=25,default='')
+    Monto = models.CharField(max_length=25,default='')
 
     def __str__(self):
-        return self,
+        return self
+
+class Notification(models.Model):
+    requestBody = models.CharField(max_length=500,default='')
+    signature = models.CharField(max_length=25,default='')
+
+    def __str__(self):
+        return self

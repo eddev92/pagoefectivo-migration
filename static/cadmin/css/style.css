@@ -15,8 +15,11 @@ textarea, input, button, select
 font-family: inherit; 
 font-size: inherit; 
 }
-.showSave {
-  display: none;
+.show-save {
+  display: block;
+}
+.errorlist{
+  display: none !important;
 }
 .pagina
 {
