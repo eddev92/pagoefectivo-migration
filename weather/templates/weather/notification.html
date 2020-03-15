@@ -73,15 +73,14 @@
       </div>
       
       <div class="siguienteLinea margenInferior5" >
-      <div class="etiqueta" >Request Body (*)</div>
-
-      <textarea id="requestBody" name="requestBody" type="text" class="cajaTexto ancho500 alto150" placeholder="Data" >{"eventType" : "cip.paid","operationNumber" : "","data" : {"cip" : "","currency" : "","amount" : ""}}</textarea>	
+      <div class="etiqueta" >Request Body (*)</div>        
+      <textarea id="requestBody" name="requestBody" type="text" class="cajaTexto ancho500 alto150" placeholder="Data" >{"eventType" : "cip.paid","operationNumber" : "","data" : {"cip" : "","currency" : "{{currencyFromConfig}}","amount" : {{montoFromConfig}}}}</textarea>	
       <div id="requestBodyMensaje" class="mensajeRequerido" ></div>		
       </div>
     
       <div class="siguienteLinea" >
       <div class="alineado margenIzquierdo40 " >
-      <button id="btnLimpiar" name="btnLimpiar" type="button" class="botonSecundario ancho150 margenSuperior30" >Limpiar</button>			
+      <input id="btnLimpiar" type="submit" name="btnLimpiar" class="botonSecundario ancho150 margenSuperior30" value="Limpiar" ></input>		
       </div>		
       
       <div class="alineado margenIzquierdo150 " >

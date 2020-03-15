@@ -118,8 +118,6 @@
     
         <div class="siguienteLinea margenInferior5" >
         <div class="etiqueta" >Modo de Integración (*)</div>
-        <!-- {{form.ModoIntegracion.value}}
-        {{ModoIntegracionLoaded}} -->
         <select name="ModoIntegracion" id="ModoIntegracion" class="combo ancho500" required >
             <option value="{% if ModoIntegracionLoaded %}{{ModoIntegracionLoaded}}{% else %}{{form.ModoIntegracion.value}}{% endif %}" disabled selected hidden >
               {% if not ModoIntegracionLoaded and not form.ModoIntegracion.value %}

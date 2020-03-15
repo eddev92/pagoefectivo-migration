@@ -4,12 +4,10 @@ from .models import City, Notification
 from .forms import ConfigurationForm, NotificationForm
 from django.core import serializers
 from time import sleep
-from django.template import RequestContext
 import http.client
 import json
 from django.http import HttpResponseRedirect, HttpResponse
 from bs4 import BeautifulSoup
-import threading
 from django.views.decorators.csrf import csrf_exempt
 import time
 
@@ -17,9 +15,15 @@ import time
 def index(request):
     body = {}
     countryLoaded = ""
+    montoLoaded = ""
     if request.method == "GET":
+        print("GET HOME")
         if request.COOKIES.get('pais'):
             countryLoaded  = request.COOKIES['pais']
+    
+        if request.COOKIES.get('Monto'):
+            montoLoaded  = request.COOKIES['Monto']
+            print(montoLoaded, "montoLoaded")
     
     if request.method == 'POST':
         body = {
@@ -50,22 +54,33 @@ def index(request):
         else:
             print("Error al enviar pago. Intente nuevamente")
 
-    context = {"country": countryLoaded}
+    context = {"country": countryLoaded, "montoFromConfg": montoLoaded}
     return render(request, 'weather/weather.html', context)
-
-def fnAfterSeconds(request):
-    print("cambiar valor")
-    emptyField = ""
-    time.sleep(4)
-    print("despues 4 segundos fnAfterSeconds")
-    contextAux = {'key_filed': "0", "emptyField": emptyField }
-    return render(request, 'weather/notification.html', contextAux)
 
 @csrf_exempt
 def indexNotification(request):  
-    isSaved = "0"  
+    isSaved = "0"
+    currencyLoaded = ""
+    montoLoaded = ""
     form = ""
+    if request.method == "GET":
+        print("GET NOTIF")
+        if request.COOKIES.get('TipoMoneda'):
+            currencyLoaded  = request.COOKIES['TipoMoneda']
+            print(currencyLoaded, "currencyLoaded")
+
+        if request.COOKIES.get('Monto'):
+            montoLoaded  = request.COOKIES['Monto']
+            print(montoLoaded, "countryLoaded")
+
+            context = {'key_filed': isSaved, "currencyFromConfig": currencyLoaded, "montoFromConfig": montoLoaded}
+            return render(request, 'weather/notification.html', context)
+
     if request.method == "POST":
+        if request.POST.get("btnLimpiar"):
+            context = {}
+            return render(request, 'weather/notification.html', context)            
+
         form = NotificationForm(request.POST)  
         if form.is_valid():
             aux1 = str(form.__getitem__('requestBody'))
@@ -75,9 +90,7 @@ def indexNotification(request):
             parse2 = BeautifulSoup(aux2)
 
             value1 = parse1.find('input').get('value')
-            print(value1, "value1")
             value2 = parse2.find('input').get('value')
-            print(value2, "value2")
             body = {
                 'PE-Signature': value2,
                 'requestBody': value1
@@ -92,13 +105,9 @@ def indexNotification(request):
                 emptyField = ""
                 form.save()
                 isSaved = "1"
-                print(response.status_code) 
-                print(response.text)
                 print(isSaved,"is Valid")
                 context = { 'form': form, 'key_filed': isSaved, "emptyField": emptyField }
-                # fnAfterSeconds(request)
                 return render(request, 'weather/notification.html', context)
-                # return render(request, 'weather/notification.html', context)
             else:
                 form.save()
                 isSaved = "2"
@@ -141,63 +150,62 @@ def indexConfiguration(request):
 
     if request.COOKIES.get('pais'):
         countryLoaded  = request.COOKIES['pais']
-        print(countryLoaded, "countryLoaded")
 
     if request.COOKIES.get('ServidorPagoEfectivo'):
         ServidorPagoEfectivoLoaded  = request.COOKIES['ServidorPagoEfectivo']
-        print(ServidorPagoEfectivoLoaded, "ServidorPagoEfectivoLoaded")
 
     if request.COOKIES.get('AccessKey'):
         AccessKeyLoaded  = request.COOKIES['AccessKey']
-        print(AccessKeyLoaded, "AccessKeyLoaded")
 
     if request.COOKIES.get('SecretKey'):
         SecretKeyLoaded  = request.COOKIES['SecretKey']
-        print(SecretKeyLoaded, "SecretKeyLoaded")
 
     if request.COOKIES.get('IDComercio'):
         IDComercioLoaded  = request.COOKIES['IDComercio']
-        print(IDComercioLoaded, "IDComercioLoaded")
 
     if request.COOKIES.get('NombreComercio'):
         NombreComercioLoaded  = request.COOKIES['NombreComercio']
-        print(NombreComercioLoaded, "NombreComercioLoaded")
 
     if request.COOKIES.get('EmailComercio'):
         EmailComercioLoaded  = request.COOKIES['EmailComercio']
-        print(EmailComercioLoaded, "EmailComercioLoaded")
 
     if request.COOKIES.get('Monto'):
         MontoLoaded  = request.COOKIES['Monto']
-        print(MontoLoaded, "MontoLoaded")
 
     if request.COOKIES.get('TiempoExpiracionPago'):
         TiempoExpiracionPagoLoaded  = request.COOKIES['TiempoExpiracionPago']
-        print(TiempoExpiracionPagoLoaded, "TiempoExpiracionPagoLoaded")
 
     if request.COOKIES.get('TipoMoneda'):
         TipoMonedaLoaded  = request.COOKIES['TipoMoneda']
-        print(TipoMonedaLoaded, "TipoMonedaLoaded")
 
     if request.COOKIES.get('ModoIntegracion'):
         ModoIntegracionLoaded  = request.COOKIES['ModoIntegracion']
-        print(ModoIntegracionLoaded, "ModoIntegracionLoaded")
 
     if request.method == 'POST':
         if request.POST.get("btnCancelar"):
-            context = {}
-            s = requests.session()
-            s.cookies.clear()
-            print("PRESIONO BUTTON LIMPIAR")
+            print("LIMPIAR CONFIG")
+            form = ""
+            context = {
+                'form': form,
+                "countryLoaded": "",
+                "ServidorPagoEfectivoLoaded": "",
+                "AccessKeyLoaded": "",
+                "SecretKeyLoaded": "",
+                "IDComercioLoaded": "",
+                "NombreComercioLoaded": "",
+                "EmailComercioLoaded": "",
+                "MontoLoaded": "",
+                "TiempoExpiracionPagoLoaded": "",
+                "TipoMonedaLoaded": "",
+                "ModoIntegracionLoaded": ""
+            }
             return render(request, 'weather/configuration.html', context)            
 
     if request.method == "GET":
-        print("ENTRO")
         request.COOKIES.get('form')
 
         if request.COOKIES.get('form'):
-            formLoaded  = request.COOKIES['form']
-            print(formLoaded, "formLoaded")       
+            formLoaded  = request.COOKIES['form']     
 
         context = {"countryLoaded": countryLoaded,
                    "ServidorPagoEfectivoLoaded": ServidorPagoEfectivoLoaded,
@@ -215,9 +223,8 @@ def indexConfiguration(request):
 
     if request.method == 'POST':
         form2 = ConfigurationForm(request.POST)
-        print(form2, "form2")
         if form2.is_valid():
-            print("PASo")
+            print("form2 is valid")
             aux1 = str(form2.__getitem__('ServidorPagoEfectivo'))
             aux2 = str(form2.__getitem__('AccessKey'))
             aux3 = str(form2.__getitem__('SecretKey'))
@@ -238,34 +245,21 @@ def indexConfiguration(request):
             soup6 = BeautifulSoup(aux6)
             soup8 = BeautifulSoup(aux8)
             soup11 = BeautifulSoup(aux11)
-            # if (form2.is_valid() and countryLoaded == "" and ModoIntegracionLoaded == "" and TipoMonedaLoaded == ""):
             soup7 = BeautifulSoup(aux7)
             soup9 = BeautifulSoup(aux9)
             soup10 = BeautifulSoup(aux10)
 
             value1 = soup.find('input').get('value')
-            print(value1, "value1")
             value2 = soup2.find('input').get('value')
-            print(value2, "value2")
             value3 = soup3.find('input').get('value')
-            print(value3, "value3")
             value4 = soup4.find('input').get('value')
-            print(value4, "value4")
             value5 = soup5.find('input').get('value')
-            print(value5, "value5")
             value6 = soup6.find('input').get('value')
-            print(value6, "value6")
             value8 = soup8.find('input').get('value')
-            print(value8, "value8")
             value11 = soup11.find('input').get('value')
-            print(value11, "value11")
-
             value7 = soup7.find('input').get('value')
-            print(value7, "value7")
             value9 = soup9.find('input').get('value')
-            print(value9, "value9")
             value10 = soup10.find('input').get('value')
-            print(value10, "value10")
 
             body = {
                     "ServidorPagoEfectivo": value1,
@@ -281,14 +275,10 @@ def indexConfiguration(request):
                     "Monto":value11
             }
             data = {'title':'Python Requests','body':'Requests are awesome','userId':1}
-            print(body) 
+            print(body)
             response = requests.post('https://jsonplaceholder.typicode.com/posts', data)
             print(response.status_code)
             if response.status_code == 201:
-                print("201")
-                # if (form2.is_valid() and countryLoaded == "" and ModoIntegracionLoaded == "" and TipoMonedaLoaded == ""):
-                # form2.save()
-                # form.cleaned_data['ServidorPagoEfectivo'] 
                 isSaved = "1"
                 context = { 'form': form2, 'key_filed': isSaved }
                 response = render(request, 'weather/configuration.html', context)
@@ -300,10 +290,7 @@ def indexConfiguration(request):
                 response.set_cookie('IDComercio', value4)
                 response.set_cookie('NombreComercio', value5)
                 response.set_cookie('EmailComercio', value6)
-                # if value7:
                 response.set_cookie('ModoIntegracion', value7)
-                # else:                    
-                #     response.set_cookie('ModoIntegracion', ModoIntegracionLoaded)
                 response.set_cookie('Monto', value11)
                 response.set_cookie('TiempoExpiracionPago', value8)
                 response.set_cookie('TipoMoneda', value10)
@@ -316,7 +303,6 @@ def indexConfiguration(request):
                 return render(request, 'weather/configuration.html', context)
 
         if (form2.is_valid() == False or countryLoaded or ModoIntegracionLoaded or TipoMonedaLoaded):
-            print("REENVIA FORMULARIO PERO SE MOVIO D VISTA ANTES")
             data = {'title':'Python Requests','body':'Requests are awesome','userId':1}
             response = requests.post('https://jsonplaceholder.typicode.com/posts', data) 
             if response.status_code == 201:
@@ -357,8 +343,6 @@ def indexConfiguration(request):
                 value10 = parse10.find('input').get('value')
                 value11 = parse11.find('input').get('value')
 
-                print(value9, "value9")
-                print(countryLoaded, "countryLoaded")
                 context = {
                     'key_filed': isSaved,
                     "ServidorPagoEfectivoLoaded": value1,
@@ -374,7 +358,6 @@ def indexConfiguration(request):
                     "TipoMonedaLoaded": value10 if value10 else TipoMonedaLoaded
                 }
                 response = render(request, 'weather/configuration.html', context)
-                print("201")
                 response.set_cookie('ServidorPagoEfectivo', value1)
                 response.set_cookie('AccessKey', value2)
                 response.set_cookie('SecretKey', value3)
@@ -397,7 +380,6 @@ def indexConfiguration(request):
                     response.set_cookie('ModoIntegracion', value11)
                 else:
                     response.set_cookie('ModoIntegracion', ModoIntegracionLoaded)
-                # response.set_cookie('ModoIntegracion', value7)
                 return response
             else:
                 isSaved = "2"
@@ -405,6 +387,6 @@ def indexConfiguration(request):
                 print("is INValid")
                 return render(request, 'weather/configuration.html', context)
 
-    print(form)
+
     context = { 'form': form2, 'key_filed': isSaved, "countryLoaded": countryLoaded, "ModoIntegracionLoaded": ModoIntegracionLoaded, "TipoMonedaLoaded": TipoMonedaLoaded }
     return render(request, 'weather/configuration.html', context)
