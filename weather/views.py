@@ -64,14 +64,11 @@ def indexNotification(request):
     montoLoaded = ""
     form = ""
     if request.method == "GET":
-        print("GET NOTIF")
         if request.COOKIES.get('TipoMoneda'):
             currencyLoaded  = request.COOKIES['TipoMoneda']
-            print(currencyLoaded, "currencyLoaded")
 
         if request.COOKIES.get('Monto'):
             montoLoaded  = request.COOKIES['Monto']
-            print(montoLoaded, "countryLoaded")
 
             context = {'key_filed': isSaved, "currencyFromConfig": currencyLoaded, "montoFromConfig": montoLoaded}
             return render(request, 'weather/notification.html', context)
@@ -83,7 +80,6 @@ def indexNotification(request):
 
         form = NotificationForm(request.POST)  
         if form.is_valid():
-            print("ENTRO POST NOTIF")
             if request.COOKIES.get('TipoMoneda'):
                 currencyLoaded  = request.COOKIES['TipoMoneda']
                 print(currencyLoaded, "currencyLoaded")
@@ -111,17 +107,16 @@ def indexNotification(request):
             # API REST
             print(response.status_code)
             if response.status_code == 201:
-                emptyField = ""
                 form.save()
                 isSaved = "1"
+                emptyField = ""
                 print(isSaved,"is Valid")
                 context = { 'form': form, 'key_filed': isSaved, "emptyField": emptyField, "currencyFromConfig": currencyLoaded, "montoFromConfig": montoLoaded }
                 return render(request, 'weather/notification.html', context)
             else:
                 form.save()
                 isSaved = "2"
-                context = { 'form': form, 'key_filed': isSaved }
-                print("is INValid")
+                context = { 'form': form, 'key_filed': isSaved, "montoFromConfig": montoLoaded, "currencyFromConfig": currencyLoaded }
                 return render(request, 'weather/notification.html', context)
 
     context = {'form': form, 'key_filed': isSaved}
@@ -288,6 +283,7 @@ def indexConfiguration(request):
             response = requests.post('https://jsonplaceholder.typicode.com/posts', data)
             print(response.status_code)
             if response.status_code == 201:
+                print("201 AQUI")
                 isSaved = "1"
                 context = { 'form': form2, 'key_filed': isSaved }
                 response = render(request, 'weather/configuration.html', context)
@@ -308,13 +304,14 @@ def indexConfiguration(request):
                 form2.save()
                 isSaved = "2"
                 context = { 'form': form2, 'key_filed': isSaved }
-                print("is INValid")
+                print("is INValid AQUI")
                 return render(request, 'weather/configuration.html', context)
 
         if (form2.is_valid() == False or countryLoaded or ModoIntegracionLoaded or TipoMonedaLoaded):
             data = {'title':'Python Requests','body':'Requests are awesome','userId':1}
             response = requests.post('https://jsonplaceholder.typicode.com/posts', data) 
             if response.status_code == 201:
+                print("201 AL FINAL")
                 isSaved = "1"
                 aux1 = str(form2.__getitem__('ServidorPagoEfectivo'))
                 aux2 = str(form2.__getitem__('AccessKey'))
@@ -392,8 +389,21 @@ def indexConfiguration(request):
                 return response
             else:
                 isSaved = "2"
-                context = { 'key_filed': isSaved }
-                print("is INValid")
+                context = { 
+                    'key_filed': isSaved,
+                    "ServidorPagoEfectivoLoaded": ServidorPagoEfectivoLoaded,
+                    "AccessKeyLoaded": AccessKeyLoaded,
+                    "SecretKeyLoaded": SecretKeyLoaded,
+                    "IDComercioLoaded": IDComercioLoaded,
+                    "NombreComercioLoaded": NombreComercioLoaded,
+                    "EmailComercioLoaded": EmailComercioLoaded,
+                    "MontoLoaded": MontoLoaded,
+                    "TiempoExpiracionPagoLoaded": TiempoExpiracionPagoLoaded,
+                    "TipoMonedaLoaded": TipoMonedaLoaded,
+                    "ModoIntegracionLoaded": ModoIntegracionLoaded,
+                    "countryLoaded": countryLoaded
+                }
+                print("is INValid AL FINAL")
                 return render(request, 'weather/configuration.html', context)
 
 
