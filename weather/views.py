@@ -11,28 +11,46 @@ from django.http import HttpResponseRedirect, HttpResponse
 from bs4 import BeautifulSoup
 import threading
 from django.views.decorators.csrf import csrf_exempt
-obj = ""
+
 @csrf_exempt
 def index(request):
-
+    body = {}
+    countryLoaded = ""
     if request.method == "GET":
-        request.COOKIES.get('form')
-        formLoaded = ""
-        countryLoaded = ""
-        if request.COOKIES.get('form'):
-            formLoaded  = request.COOKIES['form']
-            print(formLoaded, "formLoaded")
-
         if request.COOKIES.get('pais'):
             countryLoaded  = request.COOKIES['pais']
             print(countryLoaded, "countryLoaded")
-        # req = request.COOKIES['form']
-        # print(req)
-        # form = ConfigurationForm(req)
-        # print(form, "form")
+    
+    if request.method == 'POST':
+        body = {
+                "currency": 0,
+                "amount": 0,
+                "transactionCode": "208",
+                "dateExpiry": "",
+                "paymentConcept": "Prueba 200",
+                "additionalData": "datos adicionales de prueba",
+                "adminEmail": "",
+                "userEmail": "ealvarado@gmail.com",
+                "userName": "Chester",
+                "userLastName": "Alvarado",
+                "userUbigeo": 150101,
+                "userCountry": "PERU",
+                "userDocumentType": "DNI",
+                "userDocumentNumber": "40226700",
+                "userCodeCountry": "+51",
+                "userPhone": "9988776650",
+                "userId": 200,
+                "serviceId": 20
+            }
+    if body:
+        data = {'title':'Python Requests','body':'Requests are awesome','userId':1}
+        response = requests.post('https://jsonplaceholder.typicode.com/posts', data)
+        if response.status_code == 201:
+            print(body, "EEnvio exitoso de pago")
+        else:
+            print("Error al enviar pago. Intente nuevamente")
 
-
-    context = {'form': formLoaded, "country": countryLoaded}
+    context = {"country": countryLoaded}
     return render(request, 'weather/weather.html', context)
 
 @csrf_exempt
@@ -63,12 +81,13 @@ def indexNotification(request):
             # API REST
             print(response.status_code)
             if response.status_code == 201:
+                emptyField = ""
                 form.save()
                 isSaved = "1"
                 print(response.status_code) 
                 print(response.text)
                 print(isSaved,"is Valid")
-                context = { 'form': form, 'key_filed': isSaved }
+                context = { 'form': form, 'key_filed': isSaved, "emptyField": emptyField }
                 return render(request, 'weather/notification.html', context)
             else:
                 form.save()
@@ -110,6 +129,14 @@ def indexConfiguration(request):
     value9 = ""
     value10 = ""
     value11 = ""
+
+    if request.method == 'POST':
+        if request.POST.get("btnCancelar"):
+            context = {}
+            s = requests.session()
+            s.cookies.clear()
+            print("PRESIONO BUTTON LIMPIAR")
+            return render(request, 'weather/configuration.html', context)            
 
     if request.method == "GET":
         print("ENTRO")

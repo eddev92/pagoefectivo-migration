@@ -67,7 +67,7 @@
       <div class="siguienteLinea margenInferior5" >
       <div class="etiqueta" >PE-Signature (*)</div>
 
-      <input id="signature" name="signature" type="text" class="cajaTexto ancho500" value="{{ form.signature.value }}" placeholder="Data">
+      <input id="signature" name="signature" type="text" class="cajaTexto ancho500" value="{% if key_filed == '1' %}{{emptyField}}{% else %}{{form.signature.value}}{% endif %}" placeholder="Data" required>
 
       <div id="PE-SignatureMensaje" class="mensajeRequerido" ></div>		
       </div>
@@ -75,7 +75,7 @@
       <div class="siguienteLinea margenInferior5" >
       <div class="etiqueta" >Request Body (*)</div>
 
-      <textarea id="requestBody" name="requestBody" type="text" class="cajaTexto ancho500 alto150" placeholder="Data" >{% if form.requestBody.value %}{{form.requestBody.value}}{% endif %}{% if not form.requestBody.value %}{"eventType" : "cip.paid","operationNumber" : "","data" : {"cip" : "","currency" : "","amount" : ""}}{% endif %}</textarea>	
+      <textarea id="requestBody" name="requestBody" type="text" class="cajaTexto ancho500 alto150" placeholder="Data" >{"eventType" : "cip.paid","operationNumber" : "","data" : {"cip" : "","currency" : "","amount" : ""}}</textarea>	
       <div id="requestBodyMensaje" class="mensajeRequerido" ></div>		
       </div>
     

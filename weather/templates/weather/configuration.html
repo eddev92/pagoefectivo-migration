@@ -140,8 +140,7 @@
         <!-- <div class="alineado " > -->
           <!-- {{form.TiempoExpiracionPago.value}} --> 
           <input name="TiempoExpiracionPago" id="TiempoExpiracionPago" value="{% if TiempoExpiracionPagoLoaded %}{{TiempoExpiracionPagoLoaded}}{% else %}{{form.TiempoExpiracionPago.value}}{% endif %}"
-          class="cajaTexto ancho300" placeholder="000" required /><div class="mensajePlaceholder" >Horas</div>		
-          
+          class="cajaTexto ancho300" placeholder="000" required /><div class="mensajePlaceholder" >Horas</div>          
           <div id="TiempoExpiracionPagoMensaje" class="mensajeRequeridoAlterno" ></div>	
         <!-- </div> -->
         </div>
@@ -195,7 +194,7 @@
         <div class="siguienteLinea" >
         
         <div class="alineado margenIzquierdo40 " >
-        <button id="btnCancelar" name="btnCancelar" type="button" class="botonSecundario ancho150 margenSuperior30" >Limpiar</button>			
+        <input id="btnCancelar" type="submit" name="btnCancelar" class="botonSecundario ancho150 margenSuperior30" value="Limpiar" ></input>			
         </div>		
         
         <div class="alineado margenIzquierdo150 " >
