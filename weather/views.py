@@ -83,6 +83,15 @@ def indexNotification(request):
 
         form = NotificationForm(request.POST)  
         if form.is_valid():
+            print("ENTRO POST NOTIF")
+            if request.COOKIES.get('TipoMoneda'):
+                currencyLoaded  = request.COOKIES['TipoMoneda']
+                print(currencyLoaded, "currencyLoaded")
+
+            if request.COOKIES.get('Monto'):
+                montoLoaded  = request.COOKIES['Monto']
+                print(montoLoaded, "countryLoaded")
+
             aux1 = str(form.__getitem__('requestBody'))
             aux2 = str(form.__getitem__('signature'))
 
@@ -106,7 +115,7 @@ def indexNotification(request):
                 form.save()
                 isSaved = "1"
                 print(isSaved,"is Valid")
-                context = { 'form': form, 'key_filed': isSaved, "emptyField": emptyField }
+                context = { 'form': form, 'key_filed': isSaved, "emptyField": emptyField, "currencyFromConfig": currencyLoaded, "montoFromConfig": montoLoaded }
                 return render(request, 'weather/notification.html', context)
             else:
                 form.save()
