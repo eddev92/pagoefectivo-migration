@@ -56,7 +56,7 @@
       <!-- <div id="accionMensaje" class="mensajeIncorrecto">El PE-Signature es incorrecto</div>
       <div id="accionMensaje" class="mensajeCorrecto">El PE-Signature es correcto</div> -->
       {% if key_filed == "1" %}
-      <div id="accionMensaje" class="mensajeCorrecto show-save ">El PE-Signature es correcto</div>
+      <div id="accionMensaje" class="mensajeCorrecto show-save">El PE-Signature es correcto</div>
       {% endif %}
       {% if key_filed == "2" %}
         <div id="accionMensaje" class="mensajeIncorrecto ">El PE-Signature es incorrecto</div>
@@ -95,6 +95,24 @@
   </div><!--cuerpo fin-->		
     
   </div><!--página fin-->
+  <script>
+    var message_ele = document.querySelectorAll(".mensajeCorrecto");
+    var message_Incorrecto = document.querySelectorAll(".mensajeIncorrecto");
+
+    if (message_ele && message_ele[0]) {
+      console.log(message_ele[0])
+      setTimeout(function(){   
+        message_ele[0].style.display = "none"; 
+      }, 4000);
+    }
+
+    if (message_Incorrecto && message_Incorrecto[0]) {
+      console.log(message_Incorrecto[0])
+      setTimeout(function(){   
+        message_Incorrecto[0].style.display = "none"; 
+      }, 4000);
+    }
+  </script>
 </body>
 
 </html>

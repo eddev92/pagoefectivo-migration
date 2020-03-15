@@ -11,6 +11,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from bs4 import BeautifulSoup
 import threading
 from django.views.decorators.csrf import csrf_exempt
+import time
 
 @csrf_exempt
 def index(request):
@@ -19,7 +20,6 @@ def index(request):
     if request.method == "GET":
         if request.COOKIES.get('pais'):
             countryLoaded  = request.COOKIES['pais']
-            print(countryLoaded, "countryLoaded")
     
     if request.method == 'POST':
         body = {
@@ -52,6 +52,14 @@ def index(request):
 
     context = {"country": countryLoaded}
     return render(request, 'weather/weather.html', context)
+
+def fnAfterSeconds(request):
+    print("cambiar valor")
+    emptyField = ""
+    time.sleep(4)
+    print("despues 4 segundos fnAfterSeconds")
+    contextAux = {'key_filed': "0", "emptyField": emptyField }
+    return render(request, 'weather/notification.html', contextAux)
 
 @csrf_exempt
 def indexNotification(request):  
@@ -88,7 +96,9 @@ def indexNotification(request):
                 print(response.text)
                 print(isSaved,"is Valid")
                 context = { 'form': form, 'key_filed': isSaved, "emptyField": emptyField }
+                # fnAfterSeconds(request)
                 return render(request, 'weather/notification.html', context)
+                # return render(request, 'weather/notification.html', context)
             else:
                 form.save()
                 isSaved = "2"
@@ -108,7 +118,6 @@ def indexConfiguration(request):
     ModoIntegracionLoaded = ""
     TipoMonedaLoaded = ""
     formLoaded = ""
-    # countryLoaded = ""
     ServidorPagoEfectivoLoaded = ""
     AccessKeyLoaded = ""
     SecretKeyLoaded = ""
@@ -116,7 +125,7 @@ def indexConfiguration(request):
     NombreComercioLoaded = ""
     EmailComercioLoaded = ""
     MontoLoaded = ""
-    TiempoExpiracionPagoLoaded = "",
+    TiempoExpiracionPagoLoaded = ""
     TipoMonedaLoaded = ""
     value1 = ""
     value2 = ""
@@ -129,6 +138,50 @@ def indexConfiguration(request):
     value9 = ""
     value10 = ""
     value11 = ""
+
+    if request.COOKIES.get('pais'):
+        countryLoaded  = request.COOKIES['pais']
+        print(countryLoaded, "countryLoaded")
+
+    if request.COOKIES.get('ServidorPagoEfectivo'):
+        ServidorPagoEfectivoLoaded  = request.COOKIES['ServidorPagoEfectivo']
+        print(ServidorPagoEfectivoLoaded, "ServidorPagoEfectivoLoaded")
+
+    if request.COOKIES.get('AccessKey'):
+        AccessKeyLoaded  = request.COOKIES['AccessKey']
+        print(AccessKeyLoaded, "AccessKeyLoaded")
+
+    if request.COOKIES.get('SecretKey'):
+        SecretKeyLoaded  = request.COOKIES['SecretKey']
+        print(SecretKeyLoaded, "SecretKeyLoaded")
+
+    if request.COOKIES.get('IDComercio'):
+        IDComercioLoaded  = request.COOKIES['IDComercio']
+        print(IDComercioLoaded, "IDComercioLoaded")
+
+    if request.COOKIES.get('NombreComercio'):
+        NombreComercioLoaded  = request.COOKIES['NombreComercio']
+        print(NombreComercioLoaded, "NombreComercioLoaded")
+
+    if request.COOKIES.get('EmailComercio'):
+        EmailComercioLoaded  = request.COOKIES['EmailComercio']
+        print(EmailComercioLoaded, "EmailComercioLoaded")
+
+    if request.COOKIES.get('Monto'):
+        MontoLoaded  = request.COOKIES['Monto']
+        print(MontoLoaded, "MontoLoaded")
+
+    if request.COOKIES.get('TiempoExpiracionPago'):
+        TiempoExpiracionPagoLoaded  = request.COOKIES['TiempoExpiracionPago']
+        print(TiempoExpiracionPagoLoaded, "TiempoExpiracionPagoLoaded")
+
+    if request.COOKIES.get('TipoMoneda'):
+        TipoMonedaLoaded  = request.COOKIES['TipoMoneda']
+        print(TipoMonedaLoaded, "TipoMonedaLoaded")
+
+    if request.COOKIES.get('ModoIntegracion'):
+        ModoIntegracionLoaded  = request.COOKIES['ModoIntegracion']
+        print(ModoIntegracionLoaded, "ModoIntegracionLoaded")
 
     if request.method == 'POST':
         if request.POST.get("btnCancelar"):
@@ -144,51 +197,7 @@ def indexConfiguration(request):
 
         if request.COOKIES.get('form'):
             formLoaded  = request.COOKIES['form']
-            print(formLoaded, "formLoaded")
-
-        if request.COOKIES.get('pais'):
-            countryLoaded  = request.COOKIES['pais']
-            print(countryLoaded, "countryLoaded")
-
-        if request.COOKIES.get('ServidorPagoEfectivo'):
-            ServidorPagoEfectivoLoaded  = request.COOKIES['ServidorPagoEfectivo']
-            print(ServidorPagoEfectivoLoaded, "ServidorPagoEfectivoLoaded")
-
-        if request.COOKIES.get('AccessKey'):
-            AccessKeyLoaded  = request.COOKIES['AccessKey']
-            print(AccessKeyLoaded, "AccessKeyLoaded")
-
-        if request.COOKIES.get('SecretKey'):
-            SecretKeyLoaded  = request.COOKIES['SecretKey']
-            print(SecretKeyLoaded, "SecretKeyLoaded")
-
-        if request.COOKIES.get('IDComercio'):
-            IDComercioLoaded  = request.COOKIES['IDComercio']
-            print(IDComercioLoaded, "IDComercioLoaded")
-
-        if request.COOKIES.get('NombreComercio'):
-            NombreComercioLoaded  = request.COOKIES['NombreComercio']
-            print(NombreComercioLoaded, "NombreComercioLoaded")
-
-        if request.COOKIES.get('EmailComercio'):
-            EmailComercioLoaded  = request.COOKIES['EmailComercio']
-            print(EmailComercioLoaded, "EmailComercioLoaded")
-
-        if request.COOKIES.get('Monto'):
-            MontoLoaded  = request.COOKIES['Monto']
-            print(MontoLoaded, "MontoLoaded")
-
-        if request.COOKIES.get('TiempoExpiracionPago'):
-            TiempoExpiracionPagoLoaded  = request.COOKIES['TiempoExpiracionPago']
-            print(TiempoExpiracionPagoLoaded, "TiempoExpiracionPagoLoaded")
-
-        if request.COOKIES.get('TipoMoneda'):
-            TipoMonedaLoaded  = request.COOKIES['TipoMoneda']
-            print(TipoMonedaLoaded, "TipoMonedaLoaded")
-
-        if request.COOKIES.get('ModoIntegracion'):
-            ModoIntegracionLoaded  = request.COOKIES['ModoIntegracion']
-            print(ModoIntegracionLoaded, "ModoIntegracionLoaded")
+            print(formLoaded, "formLoaded")       
 
         context = {"countryLoaded": countryLoaded,
                    "ServidorPagoEfectivoLoaded": ServidorPagoEfectivoLoaded,
@@ -206,53 +215,6 @@ def indexConfiguration(request):
 
     if request.method == 'POST':
         form2 = ConfigurationForm(request.POST)
-        # create a form instance and populate it with data from the request:
-        # check whether it's valid:
-
-        if request.COOKIES.get('pais'):
-            countryLoaded  = request.COOKIES['pais']
-            print(countryLoaded, "countryLoaded")
-
-        if request.COOKIES.get('ServidorPagoEfectivo'):
-            ServidorPagoEfectivoLoaded  = request.COOKIES['ServidorPagoEfectivo']
-            print(ServidorPagoEfectivoLoaded, "ServidorPagoEfectivoLoaded")
-
-        if request.COOKIES.get('AccessKey'):
-            AccessKeyLoaded  = request.COOKIES['AccessKey']
-            print(AccessKeyLoaded, "AccessKeyLoaded")
-
-        if request.COOKIES.get('SecretKey'):
-            SecretKeyLoaded  = request.COOKIES['SecretKey']
-            print(SecretKeyLoaded, "SecretKeyLoaded")
-
-        if request.COOKIES.get('IDComercio'):
-            IDComercioLoaded  = request.COOKIES['IDComercio']
-            print(IDComercioLoaded, "IDComercioLoaded")
-
-        if request.COOKIES.get('NombreComercio'):
-            NombreComercioLoaded  = request.COOKIES['NombreComercio']
-            print(NombreComercioLoaded, "NombreComercioLoaded")
-
-        if request.COOKIES.get('EmailComercio'):
-            EmailComercioLoaded  = request.COOKIES['EmailComercio']
-            print(EmailComercioLoaded, "EmailComercioLoaded")
-
-        if request.COOKIES.get('Monto'):
-            MontoLoaded  = request.COOKIES['Monto']
-            print(MontoLoaded, "MontoLoaded")
-
-        if request.COOKIES.get('TiempoExpiracionPago'):
-            TiempoExpiracionPagoLoaded  = request.COOKIES['TiempoExpiracionPago']
-            print(TiempoExpiracionPagoLoaded, "TiempoExpiracionPagoLoaded")
-
-        if request.COOKIES.get('TipoMoneda'):
-            TipoMonedaLoaded  = request.COOKIES['TipoMoneda']
-            print(TipoMonedaLoaded, "TipoMonedaLoaded")
-
-        if request.COOKIES.get('ModoIntegracion'):
-            ModoIntegracionLoaded  = request.COOKIES['ModoIntegracion']
-            print(ModoIntegracionLoaded, "ModoIntegracionLoaded")
-
         print(form2, "form2")
         if form2.is_valid():
             print("PASo")
@@ -320,7 +282,8 @@ def indexConfiguration(request):
             }
             data = {'title':'Python Requests','body':'Requests are awesome','userId':1}
             print(body) 
-            response = requests.post('https://jsonplaceholder.typicode.com/posts', data) 
+            response = requests.post('https://jsonplaceholder.typicode.com/posts', data)
+            print(response.status_code)
             if response.status_code == 201:
                 print("201")
                 # if (form2.is_valid() and countryLoaded == "" and ModoIntegracionLoaded == "" and TipoMonedaLoaded == ""):
