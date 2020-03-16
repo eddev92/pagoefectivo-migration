@@ -1,0 +1,5 @@
+.env
+staticfiles
+*.pyc
+venv
+.DS_Store

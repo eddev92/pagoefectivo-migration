@@ -1,0 +1,1 @@
+web: gunicorn pagoefectivo.wsgi --log-file -
