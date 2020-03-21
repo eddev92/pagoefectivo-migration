@@ -256,11 +256,12 @@
                         Sub Total
                         </div>
                         <div id="precioSubTotal" class="alineado ancho60 margenInferior5" >
-                        {% if currencyLoaded == "PEN" %}
-                            S/.{{montoFromConfg}}
-                        {% else %}
-                            $/.{{montoFromConfg}}
-                        {% endif %}
+                            {% if currencyLoaded == "PEN" and country != "" %}
+                                S/.{{montoFromConfg}}
+                            {% endif %}
+                            {% if currencyLoaded == "USD" and country != "" %}
+                                $/.{{montoFromConfg}}
+                            {% endif %}
                         </div>
                     </div>
                 <!-- fin de fila4 -->
@@ -278,9 +279,10 @@
                         </div>
                         <div class="alineado ancho60" >
                             <div id="precioTotalMoneda" class="alineado" ></div><div class="alineado" id="precioTotal" value="" >                                
-                                {% if currencyLoaded == "PEN" %}
+                                {% if currencyLoaded == "PEN" and country != "" %}
                                     S/.{{montoFromConfg}}
-                                {% else %}
+                                {% endif %}
+                                {% if currencyLoaded == "USD" and country != "" %}
                                     $/.{{montoFromConfg}}
                                 {% endif %}
                             </div>
