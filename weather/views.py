@@ -29,11 +29,9 @@ def index(request):
     countryLoaded = ""
     montoLoaded = ""
     currencyLoaded = ""
-    tokenLoaded = ""
     AccessKeyLoaded = ""
     SecretKeyLoaded = ""
     IDComercioLoaded = ""
-    amountLoadedByService = 0
     timeExpiration = 0
     emailLoaded = ""
     auxMontGenerate = ""
@@ -79,12 +77,9 @@ def index(request):
                 timeExpiration  = request.COOKIES['TiempoExpiracionPago']
 
             print("entro boton PAGAR")
-            # fecha de creacion de la solicitud
-            # FORMAT DATE ATOM
-            # valueStr = int(value7)
-            # dateFinalFormated = str(datetime.now())
-            # print(dateFinalFormated, "datetime.now() HORA EXACTA PAGAR")
+            # print(dateFinalFormated, "datetime.now() HORA EXACTA DE LA GENERACION DEL PROCESO")
             dateNowAddTimeToExpiration = datetime.now()
+
             cutDateNowAddTimeToExpiration = str(dateNowAddTimeToExpiration.replace(tzinfo=pytz.utc))
             cutDateNowAddTimeToExpiration = cutDateNowAddTimeToExpiration.replace('.', " ")                
             print(cutDateNowAddTimeToExpiration, "cutDateNowAddTimeToExpiration replace")
@@ -104,10 +99,10 @@ def index(request):
             dateExpiryFinalFormated = auxExpiry[0] + "T" + auxExpiry[1] + "-05:00"
             print(dateExpiryFinalFormated, "dateExpiryFinalFormated")
             #FIN FORMAT DATE ATOM
+
             auxMont = float(montoLoaded)
             auxMont = "{:.2f}".format(auxMont)
             print(auxMont, "auxMont convert")
-            # date = "2020-03-20T09:40:00-05:00"
 
             parametro = str(IDComercioLoaded) + "." + AccessKeyLoaded + "." + SecretKeyLoaded + "." + dateFinalFormated
             print (parametro, "parametro")
