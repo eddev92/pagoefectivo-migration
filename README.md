@@ -4,6 +4,8 @@ pre-requisitos
 	
 (*) Ubicarse en la raiz del proyecto, a la altura del archivo "manage.py" y ejecutar los siguientes comandos en el terminal:
 commands:
+	- pip install hashlib (de ser necesario)
+	- pip install hmac (de ser necesario)
 	- pip install beautifulsoup4
 	- python manage.py makemigrations
 	- python manage.py migrate

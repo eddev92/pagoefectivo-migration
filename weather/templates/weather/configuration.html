@@ -134,7 +134,7 @@
         <select name="ModoIntegracion" id="ModoIntegracion" class="combo ancho500"  >
             <option value="{% if ModoIntegracionLoaded %}{{ModoIntegracionLoaded}}{% else %}{{form.ModoIntegracion.value}}{% endif %}" disabled selected hidden >
               {% if not ModoIntegracionLoaded and not form.ModoIntegracion.value %}
-                Selecciona la modalidad de integración
+                <span id="a-int-default">Selecciona la modalidad de integración</span>
               {% endif %}
               {% if form.ModoIntegracion.value == "IFR" or ModoIntegracionLoaded == "IFR" %}
                 Iframe

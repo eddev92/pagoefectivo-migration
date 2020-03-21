@@ -2,8 +2,8 @@ import requests
 from django.shortcuts import render
 from .models import City, Notification
 from .forms import ConfigurationForm, NotificationForm
-from django.core import serializers
-from time import sleep
+# from django.core import serializers
+# from time import sleep
 import http.client
 import json
 from django.http import HttpResponseRedirect, HttpResponse
@@ -12,14 +12,10 @@ from django.views.decorators.csrf import csrf_exempt
 import time
 import hmac
 import hashlib
-import datetime
 from django.utils.dateparse import parse_datetime
-from pyrfc3339 import generate, parse
 from datetime import datetime, timedelta
 import pytz
-import rfc3339
-import iso8601
-from dateutil import tz
+# from dateutil import tz
 from django.utils import timezone
 
 @csrf_exempt
@@ -754,3 +750,9 @@ def indexConfiguration(request):
 
     context = { 'form': form2, 'key_filed': isSaved, "countryLoaded": countryLoaded, "ModoIntegracionLoaded": ModoIntegracionLoaded, "TipoMonedaLoaded": TipoMonedaLoaded }
     return render(request, 'weather/configuration.html', context)
+
+# @csrf_exempt
+# def handlerValida(event):
+#     body = json.loads(event["body"])
+#     print(body, "BODY VALIDA")
+# 	# emailParam = body["data"]
