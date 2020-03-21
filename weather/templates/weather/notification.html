@@ -65,17 +65,21 @@
         {% csrf_token %}
         {{ form }}
       <div class="siguienteLinea margenInferior5" >
+        {{ form.non_field_errors }}
       <div class="etiqueta" >PE-Signature (*)</div>
 
-      <input id="signature" name="signature" type="text" class="cajaTexto ancho500" value="{% if key_filed == '1' %}{{emptyField}}{% else %}{{form.signature.value}}{% endif %}" placeholder="Data" required>
-
-      <div id="PE-SignatureMensaje" class="mensajeRequerido" ></div>		
-      </div>
+      <input id="signature" name="signature" type="text" class="cajaTexto ancho500" value="{% if key_filed == '1' %}{{emptyField}}{% else %}{{form.signature.value}}{% endif %}" placeholder="Data">
+      {% if emptySigt == "1" %}
+        <div id="PE-SignatureMensaje" class="mensajeRequerido">Indique el PE-Signature</div>		
+      {% endif %}
+    </div>
       
       <div class="siguienteLinea margenInferior5" >
       <div class="etiqueta" >Request Body (*)</div>        
       <textarea id="requestBody" name="requestBody" type="text" class="cajaTexto ancho500 alto150" placeholder="Data" >{"eventType" : "cip.paid","operationNumber" : "","data" : {"cip" : "{{cipByService}}","currency" : "{{currencyFromConfig}}","amount" : {{montoFromConfig}}}}</textarea>	
-      <div id="requestBodyMensaje" class="mensajeRequerido" ></div>		
+      {% if emptyRq == "1" %}
+      <div id="requestBodyMensaje" class="mensajeRequerido" >Cargue la requestBody</div>
+      {% endif %}
       </div>
     
       <div class="siguienteLinea" >
@@ -97,6 +101,8 @@
   <script>
     var message_ele = document.querySelectorAll(".mensajeCorrecto");
     var message_Incorrecto = document.querySelectorAll(".mensajeIncorrecto");
+    var inputSignature = document.querySelectorAll("#signature");
+    var msgSignature = document.querySelectorAll("#PE-SignatureMensaje");
 
     if (message_ele && message_ele[0]) {
       console.log(message_ele[0])
@@ -104,12 +110,26 @@
         message_ele[0].style.display = "none"; 
       }, 4000);
     }
-
+  
     if (message_Incorrecto && message_Incorrecto[0]) {
       console.log(message_Incorrecto[0])
       setTimeout(function(){   
         message_Incorrecto[0].style.display = "none"; 
       }, 4000);
+    }
+
+    if (inputSignature && inputSignature[0]) {
+      console.log(inputSignature[0])
+      const input = inputSignature[0];
+      input.addEventListener('input', evt => {
+        if (evt) {
+          console.log('tecleo signature')
+          if (msgSignature && msgSignature[0]) {
+            msgSignature[0].style.display = "none"; 
+          }
+        }
+
+      })
     }
   </script>
 </body>

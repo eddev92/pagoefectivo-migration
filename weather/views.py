@@ -119,7 +119,7 @@ def index(request):
 
             if bodyAuthorization:
                 headers_data = { 
-                    'content-type': 'application/json; charset=utf-8'
+                    'content-type': 'application/json; charset=UTF-8'
                 }
                 print(bodyAuthorization, "bodyAuthorization")
                 response = requests.post('https://pre1a.services.pagoefectivo.pe/v1/authorizations', bodyAuthorization, headers=headers_data)
@@ -229,6 +229,10 @@ def indexNotification(request):
     form = ""
     amountByService = 0
     cipByService = 0
+    emptySignature = ""
+    emptyRqBody = ""
+    value1 = ""
+    value2 = ""
 
     if request.method == "GET":
         if request.COOKIES.get('penAuth'):
@@ -251,20 +255,36 @@ def indexNotification(request):
             context = {}
             return render(request, 'weather/notification.html', context)
 
-        form = NotificationForm(request.POST)  
-        if form.is_valid():
-            print("ENTRO NOTIFICA")
+        form = NotificationForm(request.POST)
+        
+        aux1 = str(form.__getitem__('requestBody'))
+        aux2 = str(form.__getitem__('signature'))
+
+        soup = BeautifulSoup(aux1)
+        soup2 = BeautifulSoup(aux2)
+
+        value1 = soup.find('input').get('value')
+        value2 = soup2.find('input').get('value')
+
+        print(form , "FORM NOTIFICA ENVIANDO")
+        if value1 and value2:
+            print("ENTRO NOTIFICA VALIDA")
+            if not value1:
+                print("REQUESTBODY COMPLETO")
+                emptySignature = "2"
+            
+            if not value2:
+                print("SIGNATURE COMPLETO")
+                emptyRqBody = "2"
+
             if request.COOKIES.get('penAuth'):
                 currencyLoaded  = request.COOKIES['penAuth']
-                print(currencyLoaded, "currencyLoaded")
 
             if request.COOKIES.get('amountAuth'):
                 montoLoaded  = request.COOKIES['amountAuth']
-                print(montoLoaded, "montoLoaded")
 
             if request.COOKIES.get('SecretKey'):
                 secretKeyLoaded  = request.COOKIES['SecretKey']
-                print(secretKeyLoaded, "secretKeyLoaded")
 
             aux1 = str(form.__getitem__('requestBody'))
             aux2 = str(form.__getitem__('signature'))
@@ -278,25 +298,16 @@ def indexNotification(request):
                 'PE-Signature': value2,
                 'requestBody': value1
             }
-            print(body, 'FORM VALIDO')
-            # SENT TO API REST
-            data = {'title':'Python Requests','body':'Requests are awesome','userId':1}
-            headers = {'content-type': 'application/json'}
-            response = requests.post('https://jsonplaceholder.typicode.com/posts', data, headers) 
-            # API REST
-            print(response.status_code)
-            print(body["requestBody"], "requestBody")
+
             signature = hmac.new(bytes(body["requestBody"] , 'latin-1'), msg = bytes(str(secretKeyLoaded) , 'latin-1'), digestmod = hashlib.sha256).hexdigest().upper()
-            print(signature, "hmac.new 256")
+            print(signature, "hmac.new 256 signature en Validacion")
             signatureAux = body["PE-Signature"]
-            # if response.status_code == 201:
+            print(signatureAux, "PE-Signature")
+
             if signature == str(signatureAux):
-                print(response.text)
-                print(request.POST)
                 form.save()
                 isSaved = "1"
                 emptyField = ""
-                print(isSaved,"is Valid")
                 context = { 'form': form, 'key_filed': isSaved, "emptyField": emptyField, "currencyFromConfig": currencyLoaded, "montoFromConfig": montoLoaded }
                 return render(request, 'weather/notification.html', context)
             else:
@@ -304,6 +315,18 @@ def indexNotification(request):
                 isSaved = "2"
                 context = { 'form': form, 'key_filed': isSaved, "montoFromConfig": montoLoaded, "currencyFromConfig": currencyLoaded }
                 return render(request, 'weather/notification.html', context)
+        else:
+            if not value1:
+                print("REQUESTBODY VACIO")
+                emptyRqBody = "1"
+            
+            if not value2:
+                print("SIGNATURE VACIO")
+                emptySignature = "1"
+
+            print(emptySignature,"FORM INVALIDO O CAMPOS INCOMPLETOS")
+            context = {'form': form, 'key_filed': isSaved, "emptyRq": emptyRqBody, 'emptySigt': emptySignature}
+            return render(request, 'weather/notification.html', context)
 
     context = {'form': form, 'key_filed': isSaved}
     return render(request, 'weather/notification.html', context)
@@ -600,12 +623,9 @@ def indexConfiguration(request):
                 print(datetime.now(), "datetime.now() HORA EXACTA")
                 dateNowAddTimeToExpiration = datetime.now() + timedelta(hours=valueStr)
                 cutDateNowAddTimeToExpiration = str(dateNowAddTimeToExpiration.replace(tzinfo=pytz.utc))
-                cutDateNowAddTimeToExpiration = cutDateNowAddTimeToExpiration.replace('.', " ")                
-                print(cutDateNowAddTimeToExpiration, "cutDateNowAddTimeToExpiration replace")
+                cutDateNowAddTimeToExpiration = cutDateNowAddTimeToExpiration.replace('.', " ")
                 aux = cutDateNowAddTimeToExpiration.split(' ')
-                print(aux[0], "split")
                 dateFinalFormated = aux[0] + "T" + aux[1] + "-05:00"
-                print(dateFinalFormated, "dateFinalFormated")
                 #FIN FORMAT DATE ATOM
 
                 context = {
@@ -630,11 +650,11 @@ def indexConfiguration(request):
                 response.set_cookie('NombreComercio', value5)
                 response.set_cookie('EmailComercio', value6)
                 response.set_cookie('TiempoExpiracionPago', value7)
+
                 auxMont1 = float(value8)
                 auxMont1 = "{:.2f}".format(auxMont1)
-                print(auxMont1, "auxMont convert")
                 response.set_cookie('Monto', auxMont1)
-                # response.set_cookie('Monto', value8)
+
                 if value9:
                     response.set_cookie('pais', value9)
                 else:
