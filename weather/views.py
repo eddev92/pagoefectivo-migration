@@ -155,7 +155,7 @@ def index(request):
                         "cipUrl": "https://pre1a.payment.pagoefectivo.pe/AB803C1C-3266-4CFF-A236-4D9DD5AD260A.html"
                         }
                     }
-                if response.status_code != 201:
+                if response.status_code == 201:
                     print("201 Auth")
                     #DESCOMENTAR CUANDO SE PRUEBA CON CREDENCIALES CORRECTAS
                     # if responseAuthJson["code"] == 100
@@ -195,7 +195,7 @@ def index(request):
                         print(responseCips.status_code, "status_code /cips")
                         print(responseCips.headers, "HEADERS")
                         # responseCipsJson = responseCips.json()
-                        if responseCips.status_code != 201:
+                        if responseCips.status_code == 201:
                             print("201 Cips")
                             print(resAuxAuth, "RESPONSE AUTH 201 GENERO CIP Y SETEA EN COOKIES")
                             #DESCOMENTAR CUANDO SE PRUEBA CON CREDENCIALES CORRECTAS
