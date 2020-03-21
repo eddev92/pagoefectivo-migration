@@ -360,6 +360,18 @@ def indexConfiguration(request):
     value9 = ""
     value10 = ""
     value11 = ""
+    # VALUES FOR FIELDS VALIDATION
+    empty1 = ""
+    empty2 = ""
+    empty3 = ""
+    empty4 = ""
+    empty5 = ""
+    empty6 = ""
+    empty7 = ""
+    empty8 = ""
+    empty9 = ""
+    empty10 = ""
+    empty11 = ""
 
     if request.COOKIES.get('pais'):
         countryLoaded  = request.COOKIES['pais']
@@ -435,49 +447,61 @@ def indexConfiguration(request):
         return render(request, 'weather/configuration.html', context)
 
     if request.method == 'POST':
-        form2 = ConfigurationForm(request.POST)
-        if form2.is_valid():
+        form2 = ConfigurationForm(request.POST)        
+        aux1 = str(form2.__getitem__('ServidorPagoEfectivo'))
+        aux2 = str(form2.__getitem__('AccessKey'))
+        aux3 = str(form2.__getitem__('SecretKey'))
+        aux4 = str(form2.__getitem__('IDComercio'))
+        aux5 = str(form2.__getitem__('NombreComercio'))
+        aux6 = str(form2.__getitem__('EmailComercio'))
+        aux8 = str(form2.__getitem__('TiempoExpiracionPago'))
+        aux11 = str(form2.__getitem__('Monto'))
+        aux7 = str(form2.__getitem__('ModoIntegracion'))
+        aux9 = str(form2.__getitem__('Pais'))
+        aux10 = str(form2.__getitem__('TipoMoneda'))
+
+        soup = BeautifulSoup(aux1)
+        soup2 = BeautifulSoup(aux2)
+        soup3 = BeautifulSoup(aux3)
+        soup4 = BeautifulSoup(aux4)
+        soup5 = BeautifulSoup(aux5)
+        soup6 = BeautifulSoup(aux6)
+        soup8 = BeautifulSoup(aux8)
+        soup11 = BeautifulSoup(aux11)
+        soup7 = BeautifulSoup(aux7)
+        soup9 = BeautifulSoup(aux9)
+        soup10 = BeautifulSoup(aux10)
+
+        value1 = soup.find('input').get('value')
+        value2 = soup2.find('input').get('value')
+        value3 = soup3.find('input').get('value')
+        value4 = soup4.find('input').get('value')
+        value5 = soup5.find('input').get('value')
+        value6 = soup6.find('input').get('value')
+        value8 = soup8.find('input').get('value')
+        value11 = soup11.find('input').get('value')
+        value7 = soup7.find('input').get('value')
+        value9 = soup9.find('input').get('value')
+        value10 = soup10.find('input').get('value')
+        # if form2.is_valid():
+        if not value9:
+            if request.COOKIES.get('pais'):
+                value9  = request.COOKIES['pais']
+                print(value9, "VALUE9 PAIS")
+
+        if not value7:
+            if request.COOKIES.get('ModoIntegracion'):
+                value7  = request.COOKIES['ModoIntegracion']
+            print(value7, "value7 INTEG")
+
+        if not value10:
+            if request.COOKIES.get('TipoMoneda'):
+                value10  = request.COOKIES['TipoMoneda']
+            print(value10, "value10 MONED")
+
+
+        if value1 and value2 and value3 and value4 and value5 and value6 and value7 and value8 and value9 and value10 and value11:
             print("form2 is valid")
-            aux1 = str(form2.__getitem__('ServidorPagoEfectivo'))
-            aux2 = str(form2.__getitem__('AccessKey'))
-            aux3 = str(form2.__getitem__('SecretKey'))
-            aux4 = str(form2.__getitem__('IDComercio'))
-            aux5 = str(form2.__getitem__('NombreComercio'))
-            aux6 = str(form2.__getitem__('EmailComercio'))
-            aux8 = str(form2.__getitem__('TiempoExpiracionPago'))
-            aux11 = str(form2.__getitem__('Monto'))
-            aux7 = str(form2.__getitem__('ModoIntegracion'))
-            aux9 = str(form2.__getitem__('Pais'))
-            aux10 = str(form2.__getitem__('TipoMoneda'))
-
-            soup = BeautifulSoup(aux1)
-            soup2 = BeautifulSoup(aux2)
-            soup3 = BeautifulSoup(aux3)
-            soup4 = BeautifulSoup(aux4)
-            soup5 = BeautifulSoup(aux5)
-            soup6 = BeautifulSoup(aux6)
-            soup8 = BeautifulSoup(aux8)
-            soup11 = BeautifulSoup(aux11)
-            soup7 = BeautifulSoup(aux7)
-            soup9 = BeautifulSoup(aux9)
-            soup10 = BeautifulSoup(aux10)
-
-            value1 = soup.find('input').get('value')
-            value2 = soup2.find('input').get('value')
-            value3 = soup3.find('input').get('value')
-            value4 = soup4.find('input').get('value')
-            value5 = soup5.find('input').get('value')
-            value6 = soup6.find('input').get('value')
-            value8 = soup8.find('input').get('value')
-            value11 = soup11.find('input').get('value')
-            value7 = soup7.find('input').get('value')
-            value9 = soup9.find('input').get('value')
-            value10 = soup10.find('input').get('value')
-
-            dateNow = generate(datetime.utcnow().replace(tzinfo=pytz.utc))
-            print(dateNow, "dateNow")
-            dateNowAddTimeToExpiration = dateNow + timedelta(hours=int(value8))
-            print(dateNowAddTimeToExpiration, "dateNowAddTimeToExpiration")
 
             body = {
                     "ServidorPagoEfectivo": value1,
@@ -492,12 +516,12 @@ def indexConfiguration(request):
                     "TipoMoneda": value10,
                     "Monto":value11
             }
-            data = {'title':'Python Requests','body':'Requests are awesome','userId':1}
+            # data = {'title':'Python Requests','body':'Requests are awesome','userId':1}
             print(body)
-            headers = {'content-type': 'application/json'}
-            response = requests.post('https://jsonplaceholder.typicode.com/posts', data, headers)
-            print(response.status_code)
-            if response.status_code == 201:
+            # headers = {'content-type': 'application/json'}
+            # response = requests.post('https://jsonplaceholder.typicode.com/posts', data, headers)
+            # print(response.status_code)
+            if body:
                 print("201 AQUI")
                 isSaved = "1"
                 context = { 'form': form2, 'key_filed': isSaved }
@@ -524,9 +548,57 @@ def indexConfiguration(request):
                 context = { 'form': form2, 'key_filed': isSaved }
                 print("is INValid AQUI")
                 return render(request, 'weather/configuration.html', context)
+        else:
+            print("FALTA ALGUN CAMPO")
+            if not value1:
+                print("servidor VACIO")
+                empty1 = "1"
+            
+            if not value2:
+                print("accsess VACIO")
+                empty2 = "1"
 
-        if (form2.is_valid() == False or countryLoaded or ModoIntegracionLoaded or TipoMonedaLoaded):
-            data = {'title':'Python Requests','body':'Requests are awesome','userId':1}
+            if not value3:
+                print("secret VACIO")
+                empty3 = "1"
+            
+            if not value4:
+                print("SIGNATURE VACIO")
+                empty4 = "1"
+
+            if not value5:
+                print("REQUESTBODY VACIO")
+                empty5 = "1"
+            
+            if not value6:
+                print("SIGNATURE VACIO")
+                empty6 = "1"
+
+            if not value7:
+                print("REQUESTBODY VACIO")
+                empty7 = "1"
+            
+            if not value8:
+                print("SIGNATURE VACIO")
+                empty8 = "1"
+
+            if not value9:
+                print("REQUESTBODY VACIO")
+                empty9 = "1"
+            
+            if not value10:
+                print("SIGNATURE VACIO")
+                empty10 = "1"
+
+            if not value11:
+                print("REQUESTBODY VACIO")
+                empty11 = "1"
+
+            context = { 'form': form2, 'key_filed': isSaved, "empty1": empty1, "empty2": empty2, "empty3": empty3, "empty4": empty4, "empty5": empty5, "empty6": empty6, "empty8": empty8, "empty10": empty10, "empty7": empty7, "empty11": empty11, "empty9": empty9 }
+            return render(request, 'weather/configuration.html', context)
+
+        if ((value1 and value2 and value3 and value4 and value5 and value6 and value7 and value8 and value9 and value10 and value11) == False or countryLoaded or ModoIntegracionLoaded or TipoMonedaLoaded):
+            # data = {'title':'Python Requests','body':'Requests are awesome','userId':1}
             aux1 = str(form2.__getitem__('ServidorPagoEfectivo'))
             aux2 = str(form2.__getitem__('AccessKey'))
             aux3 = str(form2.__getitem__('SecretKey'))
@@ -577,9 +649,9 @@ def indexConfiguration(request):
                     "Monto":value11
             }
             print(body)
-            headers = {'content-type': 'application/json'}
-            response = requests.post('https://jsonplaceholder.typicode.com/posts', data, headers) 
-            if response.status_code == 201:
+            # headers = {'content-type': 'application/json'}
+            # response = requests.post('https://jsonplaceholder.typicode.com/posts', data, headers) 
+            if body:
                 print("201 AL FINAL")
                 isSaved = "1"
                 aux1 = str(form2.__getitem__('ServidorPagoEfectivo'))
@@ -617,16 +689,6 @@ def indexConfiguration(request):
                 value9 = parse9.find('input').get('value')
                 value10 = parse10.find('input').get('value')
                 value11 = parse11.find('input').get('value')
-                
-                # FORMAT DATE ATOM
-                valueStr = int(value7)
-                print(datetime.now(), "datetime.now() HORA EXACTA")
-                dateNowAddTimeToExpiration = datetime.now() + timedelta(hours=valueStr)
-                cutDateNowAddTimeToExpiration = str(dateNowAddTimeToExpiration.replace(tzinfo=pytz.utc))
-                cutDateNowAddTimeToExpiration = cutDateNowAddTimeToExpiration.replace('.', " ")
-                aux = cutDateNowAddTimeToExpiration.split(' ')
-                dateFinalFormated = aux[0] + "T" + aux[1] + "-05:00"
-                #FIN FORMAT DATE ATOM
 
                 context = {
                     'key_filed': isSaved,
@@ -650,11 +712,11 @@ def indexConfiguration(request):
                 response.set_cookie('NombreComercio', value5)
                 response.set_cookie('EmailComercio', value6)
                 response.set_cookie('TiempoExpiracionPago', value7)
-
                 auxMont1 = float(value8)
                 auxMont1 = "{:.2f}".format(auxMont1)
+                print(auxMont1, "auxMont convert")
                 response.set_cookie('Monto', auxMont1)
-
+                # response.set_cookie('Monto', value8)
                 if value9:
                     response.set_cookie('pais', value9)
                 else:

@@ -71,22 +71,28 @@
         <div class="siguienteLinea margenInferior5" >
         <div class="etiqueta" >Servidor PagoEfectivo (*)</div>
         <input name="ServidorPagoEfectivo" id="ServidorPagoEfectivo" value="{% if ServidorPagoEfectivoLoaded %}{{ServidorPagoEfectivoLoaded}}{% else %}{{form.ServidorPagoEfectivo.value}}{% endif %}"   
-          type="text" class="cajaTexto ancho500" placeholder="Url del servidor de PagoEfectivo (Testing/ Producción)" required />
-        <div id="ServidorPagoEfectivoMensaje" class="mensajeRequerido" ></div>		
+          type="text" class="cajaTexto ancho500" placeholder="Url del servidor de PagoEfectivo (Testing/ Producción)"  />
+            <!-- {% if empty1 == "1" %} -->
+          <div id="ServidorPagoEfectivoMensaje" class="mensajeRequerido" >Indique la url de PagoEfectivo</div>		
+                <!-- {% endif %}	 -->
         </div>
         
         <div class="siguienteLinea margenInferior5" >
         <div class="etiqueta" >AccessKey (*)</div>
         <input name="AccessKey" id="AccessKey" value="{% if AccessKeyLoaded %}{{AccessKeyLoaded}}{% else %}{{form.AccessKey.value}}{% endif %}"
-        type="text" class="cajaTexto ancho500" placeholder="AccessKey del servidor de PagoEfectivo (Testing/ Producción)" required />	
-        <div id="AccessKeyMensaje" class="mensajeRequerido" ></div>		
+        type="text" class="cajaTexto ancho500" placeholder="AccessKey del servidor de PagoEfectivo (Testing/ Producción)"  />	
+        <!-- {% if empty2 == "1" %} -->
+          <div id="AccessKeyMensaje" class="mensajeRequerido" >Cargue la AccessKey</div>
+        <!-- {% endif %}	 -->
         </div>
         
         <div class="siguienteLinea margenInferior5" >
         <div class="etiqueta" >SecretKey (*)</div>
         <input name="SecretKey" id="SecretKey" value="{% if SecretKeyLoaded %}{{SecretKeyLoaded}}{% else %}{{form.SecretKey.value}}{% endif %}" 
-        type="text" class="cajaTexto ancho500" placeholder="SecretKey del servidor de PagoEfectivo (Testing/ Producción)" required />	
-        <div id="SecretKeyMensaje" class="mensajeRequerido" ></div>
+        type="text" class="cajaTexto ancho500" placeholder="SecretKey del servidor de PagoEfectivo (Testing/ Producción)"  />	
+        <!-- {% if empty3 == "1" %} -->
+        <div id="SecretKeyMensaje" class="mensajeRequerido" >Cargue la SecretKey</div>
+        <!-- {% endif %}	 -->
         </div>
         
           <hr class="lineaSeparadoraHorizontal" />
@@ -96,30 +102,36 @@
         <div class="etiqueta" >ID del Comercio (*)</div>
         <input name="IDComercio" id="IDComercio" value="{% if IDComercioLoaded %}{{IDComercioLoaded}}{% else %}{{form.IDComercio.value}}{% endif %}"  
         
-        type="text" class="cajaTexto ancho500" placeholder="Ingresa tu ID" required />	
-        <div id="IDComercioMensaje" class="mensajeRequerido" ></div>		
+        type="text" class="cajaTexto ancho500" placeholder="Ingresa tu ID"  />
+        <!-- {% if empty4 == "1" %}	 -->
+        <div id="IDComercioMensaje" class="mensajeRequerido" >Indique el código del comercio</div>
+        <!-- {% endif %}	 -->
         </div>
         
         <div class="siguienteLinea margenInferior5" >
         <div class="etiqueta" >Nombre del Comercio (*)</div>
         <input name="NombreComercio" id="NombreComercio" value="{% if NombreComercioLoaded %}{{NombreComercioLoaded}}{% else %}{{form.NombreComercio.value}}{% endif %}" 
-        type="text" class="cajaTexto ancho500" placeholder="Nombre del comercio para el concepto de pago" required />	
-        <div id="NombreComercioMensaje" class="mensajeRequerido" ></div>		
+        type="text" class="cajaTexto ancho500" placeholder="Nombre del comercio para el concepto de pago"  />
+        <!-- {% if empty5 == "1" %}		 -->
+        <div id="NombreComercioMensaje" class="mensajeRequerido" >Indique el nombre del comercio</div>
+        <!-- {% endif %}	 -->
         </div>
         
         <div class="siguienteLinea margenInferior5" >
         <div class="etiqueta" >Email del Comercio (*)</div>
         <input name="EmailComercio" id="EmailComercio" value="{% if EmailComercioLoaded %}{{EmailComercioLoaded}}{% else %}{{form.EmailComercio.value}}{% endif %}" 
-        type="text" class="cajaTexto ancho500" placeholder="Email del comercio para envío de comunicaciones" required />	
-        <div id="EmailComercioMensaje" class="mensajeRequerido" ></div>		
-        </div>
+        type="text" class="cajaTexto ancho500" placeholder="Email del comercio para envío de comunicaciones"  />	
+        <!-- {% if empty6 == "1" %}		 -->
+        <div id="EmailComercioMensaje" class="mensajeRequerido" >Indique el email del comercio</div>
+        <!-- {% endif %}	 -->
+      </div>
         
           <hr class="lineaSeparadoraHorizontal" />
           <br/>
     
         <div class="siguienteLinea margenInferior5" >
         <div class="etiqueta" >Modo de Integración (*)</div>
-        <select name="ModoIntegracion" id="ModoIntegracion" class="combo ancho500" required >
+        <select name="ModoIntegracion" id="ModoIntegracion" class="combo ancho500"  >
             <option value="{% if ModoIntegracionLoaded %}{{ModoIntegracionLoaded}}{% else %}{{form.ModoIntegracion.value}}{% endif %}" disabled selected hidden >
               {% if not ModoIntegracionLoaded and not form.ModoIntegracion.value %}
                 Selecciona la modalidad de integración
@@ -134,21 +146,23 @@
             <option value="IFR" >Iframe</option>
             <option value="RED" >Redirecciona</option>			
         </select>
-        <div  id="ModoIntegracionMensaje" class="mensajeRequerido" ></div>		
+        <!-- {% if empty7 == "1" %}		  -->
+        <div  id="ModoIntegracionMensaje" class="mensajeRequerido" >Selecciona modo INt</div>
+        <!-- {% endif %}	 -->
         </div>
         
         <div class="siguienteLinea margenInferior5" >
         <div class="etiqueta" >Tiempo de expiración del Pago (*)</div>
-        <!-- <div class="alineado " > -->
           <input name="TiempoExpiracionPago" id="TiempoExpiracionPago" value="{% if TiempoExpiracionPagoLoaded %}{{TiempoExpiracionPagoLoaded}}{% else %}{{form.TiempoExpiracionPago.value}}{% endif %}"
-          class="cajaTexto ancho300" placeholder="000" required /><div class="mensajePlaceholder" >Horas</div>          
-          <div id="TiempoExpiracionPagoMensaje" class="mensajeRequeridoAlterno" ></div>	
-        <!-- </div> -->
+          class="cajaTexto ancho300" placeholder="000"  /><div class="mensajePlaceholder" >Horas</div>
+        <!-- {% if empty8 == "1" %}		 --> 
+          <div id="TiempoExpiracionPagoMensaje" class="mensajeRequeridoAlterno" >Indique el tiempo de expiración del pago</div>	
+        <!-- {% endif %}	 -->
         </div>
         
         <div class="siguienteLinea margenInferior5" >		
         <div class="etiqueta" >País (*)</div>
-        <select name="Pais" id="Pais"  class="combo ancho500" required  placeholder="Selecciona"> 
+        <select name="Pais" id="Pais"  class="combo ancho500"> 
               <option value="{% if countryLoaded %}{{countryLoaded}}{% else %}{{form.Pais.value}}{% endif %}" disabled selected hidden>
                 {% if not countryLoaded and not form.Pais.value %}
                   País del servicio
@@ -163,12 +177,14 @@
             <option value="PER" >Perú</option>
             <option value="ECU" >Ecuador</option>		
         </select>
-        <div id="PaisMensaje" class="mensajeRequerido" ></div>		
+        <!-- {% if empty9 == "1" %}		 --> 
+        <div id="PaisMensaje" class="mensajeRequerido" >ESCOGE PAIS</div>
+        <!-- {% endif %}	 -->
         </div>
         
         <div class="alineado margenInferior5" >
         <div class="etiqueta" >Tipo de moneda (*)</div>
-        <select name="TipoMoneda" id="TipoMoneda" class="combo ancho200" required >
+        <select name="TipoMoneda" id="TipoMoneda" class="combo ancho200"  >
         <option value="{% if TipoMonedaLoaded %}{{TipoMonedaLoaded}}{% else %}{{form.TipoMoneda.value}}{% endif %}" disabled selected hidden >
           {% if not form.TipoMoneda.value and not TipoMonedaLoaded %}
             Moneda de recaudación
@@ -183,14 +199,18 @@
         <option value="PEN" >Soles</option>
         <option value="USD" >Dólares</option>
         </select>
-        <div id="TipoMonedaMensaje" class="mensajeRequerido" ></div>	
+        <!-- {% if empty11 == "1" %}		 --> 
+        <div id="TipoMonedaMensaje" class="mensajeRequerido" >ESCOGE MONEDA</div>	
+        <!-- {% endif %}	 -->
         </div>
         
         <div class="alineado margenIzquierdo100 margenInferior5" >
         <div class="etiqueta"  >Monto (*)</div>
         <input name="Monto" id="Monto" value="{% if MontoLoaded %}{{MontoLoaded}}{% else %}{{form.Monto.value}}{% endif %}" 
-        type="text" class="cajaTexto ancho200" placeholder="" required />			
-        <div id="MontoMensaje" class="mensajeRequerido" ></div>
+        type="text" class="cajaTexto ancho200" placeholder=""  />
+        <!-- {% if empty11 == "1" %}		 --> 
+        <div id="MontoMensaje" class="mensajeRequerido" >Ingresa un monto</div>
+        <!-- {% endif %}	 -->
         </div>
         <div class="siguienteLinea" >
         
@@ -211,6 +231,39 @@
     <script>
       var message_ele = document.querySelectorAll(".mensajeCorrecto");
       var message_Incorrecto = document.querySelectorAll(".mensajeIncorrecto");
+
+      var inputServidor = document.querySelectorAll("#ServidorPagoEfectivo");
+      var msgServidor = document.querySelectorAll("#ServidorPagoEfectivoMensaje");
+
+      var inputAccess = document.querySelectorAll("#AccessKey");
+      var msgAccess = document.querySelectorAll("#AccessKeyMensaje");
+
+      var inputSecret = document.querySelectorAll("#SecretKey");
+      var msgSecret = document.querySelectorAll("#SecretKeyMensaje");
+      
+      var inputComercio = document.querySelectorAll("#IDComercio");
+      var msgComercio = document.querySelectorAll("#IDComercioMensaje");
+      
+      var inputNomComercio = document.querySelectorAll("#NombreComercio");
+      var msgNomComercio = document.querySelectorAll("#NombreComercioMensaje");
+      
+      var inputEmailComercio = document.querySelectorAll("#EmailComercio");
+      var msgEmailComercio = document.querySelectorAll("#EmailComercioMensaje");
+  
+      var inputTiempoExp = document.querySelectorAll("#TiempoExpiracionPago");
+      var msgTiempoExp = document.querySelectorAll("#TiempoExpiracionPagoMensaje");
+    
+      var inputMonto = document.querySelectorAll("#Monto");
+      var msgMonto = document.querySelectorAll("#MontoMensaje");      
+    
+      var selectIntegration = document.querySelectorAll("#ModoIntegracion");
+      var msgIntegration = document.querySelectorAll("#ModoIntegracionMensaje");
+
+      var selectPais = document.querySelectorAll("#Pais");
+      var msgPais = document.querySelectorAll("#PaisMensaje");
+
+      var selectMoneda = document.querySelectorAll("#TipoMoneda");
+      var msgMoneda = document.querySelectorAll("#TipoMonedaMensaje");
   
       if (message_ele && message_ele[0]) {
         console.log(message_ele[0])
@@ -225,6 +278,225 @@
           message_Incorrecto[0].style.display = "none"; 
         }, 4000);
       }
+
+      if (inputServidor && inputServidor[0]) {
+      const input = inputServidor[0];  
+      console.log(inputServidor[0].value.length, "inputServidor[0]")
+      const valueCurrent = input.value
+      input.addEventListener('input', evt => {        
+        if (evt) {
+          if (evt.target.value.length === 0) {
+            if (msgServidor && msgServidor[0]) {
+              console.log("aparecer mensaje requerido")
+              msgServidor[0].style.display = "block"; 
+            } 
+          } else {
+          console.log('tecleo signature')
+          if (msgServidor && msgServidor[0]) {
+            msgServidor[0].style.display = "none"; 
+            }
+          }
+        }
+      })
+    }
+    if (inputAccess && inputAccess[0]) {
+      console.log(inputAccess[0])
+      const input = inputAccess[0];
+      input.addEventListener('input', evt => {
+        if (evt) {
+          if (evt.target.value.length === 0) {
+            if (msgAccess && msgAccess[0]) {
+              console.log("aparecer mensaje requerido inputAccess")
+              msgAccess[0].style.display = "block"; 
+            } 
+          } else {
+          console.log('tecleo inputAccess ')
+          if (msgAccess && msgAccess[0]) {
+            msgAccess[0].style.display = "none"; 
+            }
+          }
+        }
+      })
+    }
+    if (inputSecret && inputSecret[0]) {
+      console.log(inputSecret[0])
+      const input = inputSecret[0];
+      input.addEventListener('input', evt => {
+        if (evt) {
+          if (evt.target.value.length === 0) {
+            if (msgSecret && msgSecret[0]) {
+              console.log("aparecer mensaje requerido")
+              msgSecret[0].style.display = "block"; 
+            } 
+          } else {
+          console.log('tecleo signature')
+          if (msgSecret && msgSecret[0]) {
+            msgSecret[0].style.display = "none"; 
+            }
+          }
+        }
+      })
+    }
+    
+    if (inputComercio && inputComercio[0]) {
+      console.log(inputComercio[0])
+      const input = inputComercio[0];
+      input.addEventListener('input', evt => {
+        if (evt) {
+          if (evt.target.value.length === 0) {
+            if (msgComercio && msgComercio[0]) {
+              console.log("aparecer mensaje requerido")
+              msgComercio[0].style.display = "block"; 
+            } 
+          } else {
+          console.log('tecleo signature')
+          if (msgComercio && msgComercio[0]) {
+            msgComercio[0].style.display = "none"; 
+            }
+          }
+        }
+      })
+    }
+    if (inputNomComercio && inputNomComercio[0]) {
+      console.log(inputNomComercio[0])
+      const input = inputNomComercio[0];
+      input.addEventListener('input', evt => {
+        if (evt) {
+          if (evt.target.value.length === 0) {
+            if (msgNomComercio && msgNomComercio[0]) {
+              console.log("aparecer mensaje requerido")
+              msgNomComercio[0].style.display = "block"; 
+            } 
+          } else {
+          console.log('tecleo signature')
+          if (msgNomComercio && msgNomComercio[0]) {
+            msgNomComercio[0].style.display = "none"; 
+            }
+          }
+        }
+      })
+    }
+    
+    if (inputEmailComercio && inputEmailComercio[0]) {
+      console.log(inputEmailComercio[0])
+      const input = inputEmailComercio[0];
+      input.addEventListener('input', evt => {
+        if (evt) {
+          if (evt.target.value.length === 0) {
+            if (msgEmailComercio && msgEmailComercio[0]) {
+              console.log("aparecer mensaje requerido")
+              msgEmailComercio[0].style.display = "block"; 
+            } 
+          } else {
+          console.log('tecleo signature')
+          if (msgEmailComercio && msgEmailComercio[0]) {
+            msgEmailComercio[0].style.display = "none"; 
+            }
+          }
+        }
+      })
+    }
+    if (inputTiempoExp && inputTiempoExp[0]) {
+      console.log(inputTiempoExp[0])
+      const input = inputTiempoExp[0];
+      input.addEventListener('input', evt => {
+        if (evt) {
+          if (evt.target.value.length === 0) {
+            if (msgTiempoExp && msgTiempoExp[0]) {
+              console.log("aparecer mensaje requerido")
+              msgTiempoExp[0].style.display = "block"; 
+            } 
+          } else {
+          console.log('tecleo signature')
+          if (msgTiempoExp && msgTiempoExp[0]) {
+            msgTiempoExp[0].style.display = "none"; 
+            }
+          }
+        }
+      })
+    }
+    if (inputMonto && inputMonto[0]) {
+      console.log(inputMonto[0])
+      const input = inputMonto[0];
+      input.addEventListener('input', evt => {
+        if (evt) {
+          if (evt.target.value.length === 0) {
+            if (msgMonto && msgMonto[0]) {
+              console.log("aparecer mensaje requerido")
+              msgMonto[0].style.display = "block"; 
+            } 
+          } else {
+          console.log('tecleo signature')
+          if (msgMonto && msgMonto[0]) {
+            msgMonto[0].style.display = "none"; 
+            }
+          }
+        }
+      })
+    }
+    if (selectIntegration && selectIntegration[0]) {
+      console.log(selectIntegration[0])
+      const select = selectIntegration[0];
+      select.addEventListener('change', evt => {
+         if (evt) {
+           console.log(evt.target.value)
+           console.log(selectIntegration[0].value.length)
+           if (evt.target.value.length === 0) {
+             if (msgIntegration && msgIntegration[0]) {
+               console.log("aparecer mensaje requerido")
+               msgIntegration[0].style.display = "block"; 
+             } 
+           } else {
+          console.log('tecleo signature')
+          if (msgIntegration && msgIntegration[0]) {
+            msgIntegration[0].style.display = "none"; 
+            }
+          }
+        }
+      })
+    }
+    if (selectPais && selectPais[0]) {
+      console.log(selectPais[0])
+      const select = selectPais[0];
+      select.addEventListener('change', evt => {
+         if (evt) {
+           console.log(evt.target.value)
+           console.log(selectPais[0].value.length)
+           if (evt.target.value.length === 0) {
+             if (msgPais && msgPais[0]) {
+               console.log("aparecer mensaje requerido")
+               msgPais[0].style.display = "block"; 
+             } 
+           } else {
+          console.log('tecleo signature')
+          if (msgPais && msgPais[0]) {
+            msgPais[0].style.display = "none"; 
+            }
+          }
+        }
+      })
+    }
+    if (selectMoneda && selectMoneda[0]) {
+      console.log(selectMoneda[0])
+      const select = selectMoneda[0];
+      select.addEventListener('change', evt => {
+         if (evt) {
+           console.log(evt.target.value)
+           console.log(selectMoneda[0].value.length)
+           if (evt.target.value.length === 0) {
+             if (msgMoneda && msgMoneda[0]) {
+               console.log("aparecer mensaje requerido")
+               msgMoneda[0].style.display = "block"; 
+             } 
+           } else {
+          console.log('tecleo signature')
+          if (msgMoneda && msgMoneda[0]) {
+            msgMoneda[0].style.display = "none"; 
+            }
+          }
+        }
+      })
+    }
     </script>
 </body>
 
