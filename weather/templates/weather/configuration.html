@@ -185,7 +185,7 @@
         <div class="alineado margenInferior5" >
         <div class="etiqueta" >Tipo de moneda (*)</div>
         <select name="TipoMoneda" id="TipoMoneda" class="combo ancho200"  >
-        <option value="{% if TipoMonedaLoaded %}{{TipoMonedaLoaded}}{% else %}{{form.TipoMoneda.value}}{% endif %}" disabled selected hidden >
+        <option value="{% if TipoMonedaLoaded %}{{TipoMonedaLoaded}}{% else %}{{form.TipoMoneda.value}}{% endif %}" disabled selected hidden >          
           {% if not form.TipoMoneda.value and not TipoMonedaLoaded %}
             Moneda de recaudación
           {% endif %}
@@ -196,8 +196,9 @@
             Dólares
           {% endif %}
         </option>
-        <option value="PEN" >Soles</option>
-        <option value="USD" >Dólares</option>
+
+        <option id="soles" value="PEN" >Soles</option>
+        <option id="dolares" value="USD" >Dólares</option>
         </select>
         <!-- {% if empty11 == "1" %}		 --> 
         <div id="TipoMonedaMensaje" class="mensajeRequerido" >ESCOGE MONEDA</div>	
@@ -457,10 +458,33 @@
     }
     if (selectPais && selectPais[0]) {
       console.log(selectPais[0])
+      const optionDolares = document.querySelectorAll("#soles");
+
+      console.log(selectPais[0].value, "loaded")
+      if (selectPais[0].value === "ECU") {
+        if (optionDolares && optionDolares[0]) {
+          optionDolares[0].style.display = "none"; 
+          }
+        console.log(optionDolares[0], "OPTION VALUE")
+        } else {
+          if (optionDolares && optionDolares[0]) {
+            optionDolares[0].style.display = "block"; 
+          }
+        }
       const select = selectPais[0];
       select.addEventListener('change', evt => {
          if (evt) {
-           console.log(evt.target.value)
+           console.log(evt.target.value, "PAIS")
+           if (evt.target.value === "ECU") {
+            if (optionDolares && optionDolares[0]) {
+              optionDolares[0].style.display = "none"; 
+             } 
+            console.log(optionDolares[0], "OPTION VALUE")
+           } else {
+            if (optionDolares && optionDolares[0]) {
+              optionDolares[0].style.display = "block"; 
+             }
+           }
            console.log(selectPais[0].value.length)
            if (evt.target.value.length === 0) {
              if (msgPais && msgPais[0]) {

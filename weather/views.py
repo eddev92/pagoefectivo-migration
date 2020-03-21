@@ -207,17 +207,17 @@ def index(request):
                                 return response
                         else:
                             print("NO SE GENERO CIP")
-                            context = {"country": countryLoaded, "montoFromConfg": auxMontGenerate}
+                            context = {"country": countryLoaded, "montoFromConfg": auxMontGenerate, "currencyLoaded": currencyLoaded}
                             response = render(request, 'weather/weather.html', context)
                             return response
                 else:
                     print("No genero autorizacion ni TOKEN")
-                    context = {"country": countryLoaded, "montoFromConfg": auxMontGenerate}
+                    context = {"country": countryLoaded, "montoFromConfg": auxMontGenerate, "currencyLoaded": currencyLoaded}
                     response = render(request, 'weather/weather.html', context)
                     return response
     
 
-    context = {"country": countryLoaded, "montoFromConfg": auxMontGenerate}
+    context = {"country": countryLoaded, "montoFromConfg": auxMontGenerate, "currencyLoaded": currencyLoaded}
     return render(request, 'weather/weather.html', context)
 
 @csrf_exempt
