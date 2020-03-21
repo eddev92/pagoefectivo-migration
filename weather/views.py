@@ -10,6 +10,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from bs4 import BeautifulSoup
 from django.views.decorators.csrf import csrf_exempt
 import time
+import hmac
 import hashlib
 import datetime
 from django.utils.dateparse import parse_datetime
@@ -148,7 +149,7 @@ def index(request):
                     "data": {
                         "cip": 2523136,
                         "currency": "PEN",
-                        "amount": 1,
+                        "amount": 201.01,
                         "transactionCode": "101",
                         "dateExpiry": "2020-12-31T23:59:59-05:00",
                         "cipUrl": "https://pre1a.payment.pagoefectivo.pe/AB803C1C-3266-4CFF-A236-4D9DD5AD260A.html"
@@ -229,6 +230,7 @@ def indexNotification(request):
     isSaved = "0"
     currencyLoaded = ""
     montoLoaded = ""
+    secretKeyLoaded = ""
     form = ""
     amountByService = 0
     cipByService = 0
@@ -256,6 +258,7 @@ def indexNotification(request):
 
         form = NotificationForm(request.POST)  
         if form.is_valid():
+            print("ENTRO NOTIFICA")
             if request.COOKIES.get('penAuth'):
                 currencyLoaded  = request.COOKIES['penAuth']
                 print(currencyLoaded, "currencyLoaded")
@@ -263,6 +266,10 @@ def indexNotification(request):
             if request.COOKIES.get('amountAuth'):
                 montoLoaded  = request.COOKIES['amountAuth']
                 print(montoLoaded, "montoLoaded")
+
+            if request.COOKIES.get('SecretKey'):
+                secretKeyLoaded  = request.COOKIES['SecretKey']
+                print(secretKeyLoaded, "secretKeyLoaded")
 
             aux1 = str(form.__getitem__('requestBody'))
             aux2 = str(form.__getitem__('signature'))
@@ -283,7 +290,12 @@ def indexNotification(request):
             response = requests.post('https://jsonplaceholder.typicode.com/posts', data, headers) 
             # API REST
             print(response.status_code)
-            if response.status_code == 201:
+            print(body["requestBody"], "requestBody")
+            signature = hmac.new(bytes(body["requestBody"] , 'latin-1'), msg = bytes(str(secretKeyLoaded) , 'latin-1'), digestmod = hashlib.sha256).hexdigest().upper()
+            print(signature, "hmac.new 256")
+            signatureAux = body["PE-Signature"]
+            # if response.status_code == 201:
+            if signature == str(signatureAux):
                 print(response.text)
                 print(request.POST)
                 form.save()

@@ -27,7 +27,7 @@ class Configuration(models.Model):
 
 class Notification(models.Model):
     requestBody = models.CharField(max_length=500,default='')
-    signature = models.CharField(max_length=25,default='')
+    signature = models.CharField(max_length=200,default='')
 
     def __str__(self):
         return self
