@@ -536,13 +536,13 @@ def indexConfiguration(request):
                 pth = os.path.abspath(os.path.dirname(__file__))
                 print(pth, "PATH CURRENT")
                 # # with open('./static/cadmin/config.json') as f:
-                with open(pth + './static/cadmin/config.json') as f:
+                with open(pth + '/static/cadmin/config.json') as f:
                     data = json.load(f)
                 
                     print(data, "data")
                     data['SecretKey'] = value3
 
-                with open(pth + './static/cadmin/configSaved.json', 'w') as f:
+                with open(pth + '/static/cadmin/configSaved.json', 'w') as f:
                     json.dump(data, f)
 
                 isSaved = "1"
@@ -720,13 +720,13 @@ def indexConfiguration(request):
                 pth = os.path.abspath(os.path.dirname(__file__))
                 print(pth, "PATH CURRENT")
                 # # with open('./static/cadmin/config.json') as f:
-                with open(pth + './static/cadmin/config.json') as f:
+                with open(pth + '/static/cadmin/config.json') as f:
                     data = json.load(f)
                 
                     print(data, "data")
                     data['SecretKey'] = value3
 
-                with open(pth + './static/cadmin/configSaved.json', 'w') as f:
+                with open(pth + '/static/cadmin/configSaved.json', 'w') as f:
                     json.dump(data, f)
 
                 context = {
@@ -817,7 +817,7 @@ def IdealWeight(request):
 
                 # with open(pth + './static/cadmin/configSaved.json', 'w') as f:
                 #     json.dump(data, f)
-        json_data = open(pth + './static/cadmin/configSaved.json')
+        json_data = open(pth + '/static/cadmin/configSaved.json')
         # "{% static 'cadmin/css/style.css' %}
         data1 = json.load(json_data) # deserialises it
         json_data.close()
