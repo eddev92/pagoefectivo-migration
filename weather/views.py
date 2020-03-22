@@ -25,6 +25,7 @@ from rest_framework import status
 from django.http import JsonResponse
 from django.core import serializers
 from django.conf import settings
+from django.template.loader import get_template 
 
 @csrf_exempt
 def index(request):
@@ -802,7 +803,10 @@ def ValidationAux(request):
 def IdealWeight(request):
     if request.method == "GET":
         print("INVOCO GET VALIDATION")
-        return Response(template_name="templates/weather/empty.html", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        template = get_template("weather/empty.html")
+        # HttpResponse(status=204)
+        return HttpResponse(template.render(), status=500)
+        # return Response(template_name="templates/weather/empty.html", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     if request.method == 'POST':
         signatureReceived = str(request.META.get("HTTP_PE_SIGNATURE"))
