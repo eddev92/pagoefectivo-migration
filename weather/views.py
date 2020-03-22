@@ -162,14 +162,14 @@ def index(request):
                         "cipUrl": "https://pre1a.payment.pagoefectivo.pe/AB803C1C-3266-4CFF-A236-4D9DD5AD260A.html"
                         }
                     }
-                if response.status_code != 201:
+                if response.status_code == 201:
                     print("201 Auth")
                     #DESCOMENTAR CUANDO SE PRUEBA CON CREDENCIALES CORRECTAS
-                    # if responseAuthJson["code"] == 100:
-                    if resAux["code"] == "100":
-                        print(resAux, "resAux AUTORIZO Y GENERO TOKEN")
-                        tokenAux = resAux["data"]["token"]
-                        print(resAux["data"]["token"], "TOKEN")
+                    if responseAuthJson["code"] == "100":
+                    # if resAux["code"] == "100":
+                        print(responseAuthJson, "responseAuthJson AUTORIZO Y GENERO TOKEN")
+                        tokenAux = responseAuthJson["data"]["token"]
+                        print(responseAuthJson["data"]["token"], "TOKEN")
 
                         headers_data_cip = {
                             'content-type': 'application/json; charset=UTF-8',
@@ -201,31 +201,31 @@ def index(request):
                         responseCips = requests.post('https://pre1a.services.pagoefectivo.pe/v1/cips', bodyCips, headers=headers_data_cip)
                         print(responseCips.status_code, "status_code /cips")
                         print(responseCips.headers, "HEADERS")
-                        # responseCipsJson = responseCips.json()
-                        if responseCips.status_code != 201:
+                        responseCipsJson = responseCips.json()
+                        if responseCips.status_code == 201:
                             print("201 Cips")
-                            print(resAuxAuth, "RESPONSE AUTH 201 GENERO CIP Y SETEA EN COOKIES")
+                            print(responseCipsJson, "RESPONSE AUTH 201 GENERO CIP Y SETEA EN COOKIES")
                             esPostBack = 1
-                            # if responseCipsJson["code"] == 100:
-                            if resAuxAuth["code"] == "100":
-                                amountByService = resAuxAuth["data"]["amount"]
-                                enalceCip = resAuxAuth["data"]["cipUrl"]
+                            if responseCipsJson["code"] == "100":
+                            # if resAuxAuth["code"] == "100":
+                                amountByService = responseCipsJson["data"]["amount"]
+                                enalceCip = responseCipsJson["data"]["cipUrl"]
                                 context = {"modoIntegrationLoaded": modoIntegrationLoaded, "country": countryLoaded, "montoFromConfg": amountByService, "enlaceCIP": enalceCip, "esPostBack": esPostBack}
                                 response = render(request, 'weather/weather.html', context)
                                 response.set_cookie('token', tokenAux)
-                                response.set_cookie('cipAuth', resAuxAuth["data"]["cip"])
-                                response.set_cookie('cipUrlAuth', resAuxAuth["data"]["cipUrl"])
-                                response.set_cookie('amountAuth', resAuxAuth["data"]["amount"])
-                                response.set_cookie('penAuth', resAuxAuth["data"]["currency"])
+                                response.set_cookie('cipAuth', responseCipsJson["data"]["cip"])
+                                response.set_cookie('cipUrlAuth', responseCipsJson["data"]["cipUrl"])
+                                response.set_cookie('amountAuth', responseCipsJson["data"]["amount"])
+                                response.set_cookie('penAuth', responseCipsJson["data"]["currency"])
                                 return response
                         else:
                             print("NO SE GENERO CIP")
-                            context = {"country": countryLoaded, "montoFromConfg": auxMontGenerate, "currencyLoaded": currencyLoaded}
+                            context = {"country": countryLoaded, "montoFromConfg": auxMontGenerate, "currencyLoaded": currencyLoaded, "esPostBack": esPostBack}
                             response = render(request, 'weather/weather.html', context)
                             return response
                 else:
                     print("No genero autorizacion ni TOKEN")
-                    context = {"country": countryLoaded, "montoFromConfg": auxMontGenerate, "currencyLoaded": currencyLoaded}
+                    context = {"country": countryLoaded, "montoFromConfg": auxMontGenerate, "currencyLoaded": currencyLoaded, "esPostBack": esPostBack}
                     response = render(request, 'weather/weather.html', context)
                     return response
     
@@ -532,6 +532,15 @@ def indexConfiguration(request):
             print(body)
             if body:
                 print("201 AQUI")
+                with open('./static/cadmin/config.json') as f:
+                    data = json.load(f)
+                
+                    print(data, "data")
+                    data['SecretKey'] = value3
+
+                with open('./static/cadmin/configSaved.json', 'w') as f:
+                    json.dump(data, f)
+
                 isSaved = "1"
                 context = { 'form': form2, 'key_filed': isSaved, 'countryLoaded': value9, 'TipoMonedaLoaded': value10, "ModoIntegracionLoaded": value7 }
                 response = render(request, 'weather/configuration.html', context)
@@ -546,7 +555,6 @@ def indexConfiguration(request):
                 response.set_cookie('ModoIntegracion', value7)
                 auxMont1 = float(value11)
                 auxMont1 = "{:.2f}".format(auxMont1)
-                print(auxMont1, "auxMont convert")
                 response.set_cookie('Monto', auxMont1)
                 response.set_cookie('TiempoExpiracionPago', value8)
                 response.set_cookie('TipoMoneda', value10)
@@ -607,7 +615,6 @@ def indexConfiguration(request):
             return render(request, 'weather/configuration.html', context)
 
         if ((value1 and value2 and value3 and value4 and value5 and value6 and value7 and value8 and value9 and value10 and value11) == False or countryLoaded or ModoIntegracionLoaded or TipoMonedaLoaded):
-            # data = {'title':'Python Requests','body':'Requests are awesome','userId':1}
             aux1 = str(form2.__getitem__('ServidorPagoEfectivo'))
             aux2 = str(form2.__getitem__('AccessKey'))
             aux3 = str(form2.__getitem__('SecretKey'))
@@ -658,8 +665,6 @@ def indexConfiguration(request):
                     "Monto":value11
             }
             print(body)
-            # headers = {'content-type': 'application/json'}
-            # response = requests.post('https://jsonplaceholder.typicode.com/posts', data, headers) 
             if body:
                 print("201 AL FINAL")
                 isSaved = "1"
@@ -699,6 +704,16 @@ def indexConfiguration(request):
                 value10 = parse10.find('input').get('value')
                 value11 = parse11.find('input').get('value')
 
+                # grabar secretKey archivoConfig
+                with open('./static/cadmin/config.json') as f:
+                    data = json.load(f)
+                
+                    print(data, "data")
+                    data['SecretKey'] = value3
+
+                with open('./static/cadmin/configSaved.json', 'w') as f:
+                    json.dump(data, f)
+
                 context = {
                     'key_filed': isSaved,
                     "ServidorPagoEfectivoLoaded": value1,
@@ -723,9 +738,8 @@ def indexConfiguration(request):
                 response.set_cookie('TiempoExpiracionPago', value7)
                 auxMont1 = float(value8)
                 auxMont1 = "{:.2f}".format(auxMont1)
-                print(auxMont1, "auxMont convert")
                 response.set_cookie('Monto', auxMont1)
-                # response.set_cookie('Monto', value8)
+
                 if value9:
                     response.set_cookie('pais', value9)
                 else:
@@ -765,21 +779,23 @@ def indexConfiguration(request):
     return render(request, 'weather/configuration.html', context)
 
 @api_view(["POST"])
-@csrf_exempt
 def IdealWeight(request):
 
-    SecretKeyLoaded = ""
-    if request.COOKIES.get('SecretKey'):
-        SecretKeyLoaded  = request.COOKIES['SecretKey']
-    try:
+    if request.method == 'POST':
         signatureReceived = str(request.META.get("HTTP_PE_SIGNATURE"))
+        json_data = open('./static/cadmin/configSaved.json')   
+        data1 = json.load(json_data) # deserialises it
+        json_data.close()
 
         if signatureReceived:
-            print(SecretKeyLoaded, "SecretKeyLoaded HEADER")
-            print(signatureReceived, "HEADER")
+            print(data1["SecretKey"], "SecretKeyLoaded DATA CONFIG.JSON LOADED")
+            secretKeyLoadedConfig = data1["SecretKey"]
             body = json.loads(request.body)
             print(body, "body")
-            # signatureHashed = hmac.new(bytes(signatureReceived , 'latin-1'), msg = bytes(str(secretKeyLoaded) , 'latin-1'), digestmod = hashlib.sha256).hexdigest().upper()
-            return JsonResponse("SUCCESS!", safe=False)
-    except ValueError as e:
-        return Response(e.args[0],status.HTTP_400_BAD_REQUEST)
+            signatureHashed = hmac.new(bytes(str(body) , 'latin-1'), msg = bytes(str(secretKeyLoadedConfig) , 'latin-1'), digestmod = hashlib.sha256).hexdigest().upper()
+            print(signatureHashed, "signatureHashed GENERADO ")            
+            print(signatureReceived, "SIGNATURE FROM POSTMAN")
+            if str(signatureReceived) == str(signatureHashed):
+                return JsonResponse({"code": "100", "message": "Solicitud con datos válidos"}, status=status.HTTP_200_OK, safe=False)
+            else:
+                return JsonResponse({"code": "111", "message": "Solicitud con datos inválidos"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR, safe=False)
