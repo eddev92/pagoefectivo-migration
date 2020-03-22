@@ -4,6 +4,7 @@ pre-requisitos
 	
 (*) Ubicarse en la raiz del proyecto, a la altura del archivo "manage.py" y ejecutar los siguientes comandos en el terminal:
 commands:
+	- pip install djangorestframework
 	- pip install hashlib (de ser necesario)
 	- pip install hmac (de ser necesario)
 	- pip install beautifulsoup4

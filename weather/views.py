@@ -14,6 +14,16 @@ from django.utils.dateparse import parse_datetime
 from datetime import datetime, timedelta
 import pytz
 from django.utils import timezone
+# djangorest framework
+from django.shortcuts import render
+from django.http import Http404
+from rest_framework.views import APIView
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from django.http import JsonResponse
+from django.core import serializers
+from django.conf import settings
 
 @csrf_exempt
 def index(request):
@@ -26,8 +36,14 @@ def index(request):
     SecretKeyLoaded = ""
     IDComercioLoaded = ""
     timeExpiration = 0
+    esPostBack = 0
     emailLoaded = ""
     auxMontGenerate = ""
+    modoIntegrationLoaded = ""
+
+    
+    if request.COOKIES.get('ModoIntegracion'):
+        modoIntegrationLoaded = request.COOKIES['ModoIntegracion']
 
     if request.COOKIES.get('pais'):
         countryLoaded  = request.COOKIES['pais']
@@ -53,7 +69,10 @@ def index(request):
         auxMontGenerate = ""
 
     if request.method == "GET":
-        print("GET HOME")
+        print("AQUI GET HOME")
+        context = {"esPostBack": esPostBack, "country": countryLoaded, "montoFromConfg": auxMontGenerate, "currencyLoaded": currencyLoaded}
+        response = render(request, 'weather/weather.html', context)
+        return response
     
     if request.method == 'POST':
         if request.POST.get("btnGuardar"):
@@ -120,9 +139,9 @@ def index(request):
                 print(response.text)
                 print(response.headers, "HEADERS")
                 #DESCOMENTAR CUANDO SE PRUEBA CON CREDENCIALES CORRECTAS
-                # responseAuthJson = response.json()
+                responseAuthJson = response.json()
                 resAux = {
-                    "code": 100,
+                    "code": "100",
                     "message": "Solicitud exitosa.",
                     "data": {
                     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJCSzIiLCJqdGkiOiJiYWRkZjdjNC1hMjllLTRmNDYtYTgzMy0wMDZjOWI2MjA4MTMiLCJuYW1laWQiOiIxMDI4IiwiZXhwIjoxNTc1OTg5NTYzfQ.r7USRyoIoCrgJOsLvC41fN-aIcBQ2uHhNhsPBvFW-IQ",
@@ -132,7 +151,7 @@ def index(request):
                         }
                     }
                 resAuxAuth = {
-                    "code": 100,
+                    "code": "100",
                     "message": "Solicitud exitosa.",
                     "data": {
                         "cip": 2523136,
@@ -143,17 +162,17 @@ def index(request):
                         "cipUrl": "https://pre1a.payment.pagoefectivo.pe/AB803C1C-3266-4CFF-A236-4D9DD5AD260A.html"
                         }
                     }
-                if response.status_code == 201:
+                if response.status_code != 201:
                     print("201 Auth")
                     #DESCOMENTAR CUANDO SE PRUEBA CON CREDENCIALES CORRECTAS
-                    # if responseAuthJson["code"] == 100
-                    if resAux["code"] == 100:
+                    # if responseAuthJson["code"] == 100:
+                    if resAux["code"] == "100":
                         print(resAux, "resAux AUTORIZO Y GENERO TOKEN")
                         tokenAux = resAux["data"]["token"]
                         print(resAux["data"]["token"], "TOKEN")
 
                         headers_data_cip = {
-                            'content-type': 'application/json',
+                            'content-type': 'application/json; charset=UTF-8',
                             'Accept-Language': 'es-PE',
                             'Origin': 'web',
                             'Authorization': 'Bearer' + tokenAux
@@ -183,14 +202,15 @@ def index(request):
                         print(responseCips.status_code, "status_code /cips")
                         print(responseCips.headers, "HEADERS")
                         # responseCipsJson = responseCips.json()
-                        if responseCips.status_code == 201:
+                        if responseCips.status_code != 201:
                             print("201 Cips")
                             print(resAuxAuth, "RESPONSE AUTH 201 GENERO CIP Y SETEA EN COOKIES")
-                            #DESCOMENTAR CUANDO SE PRUEBA CON CREDENCIALES CORRECTAS
-                            # if responseCipsJson["code"] == "100":
-                            if resAuxAuth["code"] == 100:
+                            esPostBack = 1
+                            # if responseCipsJson["code"] == 100:
+                            if resAuxAuth["code"] == "100":
                                 amountByService = resAuxAuth["data"]["amount"]
-                                context = {"country": countryLoaded, "montoFromConfg": amountByService}
+                                enalceCip = resAuxAuth["data"]["cipUrl"]
+                                context = {"modoIntegrationLoaded": modoIntegrationLoaded, "country": countryLoaded, "montoFromConfg": amountByService, "enlaceCIP": enalceCip, "esPostBack": esPostBack}
                                 response = render(request, 'weather/weather.html', context)
                                 response.set_cookie('token', tokenAux)
                                 response.set_cookie('cipAuth', resAuxAuth["data"]["cip"])
@@ -509,15 +529,11 @@ def indexConfiguration(request):
                     "TipoMoneda": value10,
                     "Monto":value11
             }
-            # data = {'title':'Python Requests','body':'Requests are awesome','userId':1}
             print(body)
-            # headers = {'content-type': 'application/json'}
-            # response = requests.post('https://jsonplaceholder.typicode.com/posts', data, headers)
-            # print(response.status_code)
             if body:
                 print("201 AQUI")
                 isSaved = "1"
-                context = { 'form': form2, 'key_filed': isSaved }
+                context = { 'form': form2, 'key_filed': isSaved, 'countryLoaded': value9, 'TipoMonedaLoaded': value10, "ModoIntegracionLoaded": value7 }
                 response = render(request, 'weather/configuration.html', context)
                 response.set_cookie('form', form2)
                 response.set_cookie('pais', value9)
@@ -747,3 +763,23 @@ def indexConfiguration(request):
 
     context = { 'form': form2, 'key_filed': isSaved, "countryLoaded": countryLoaded, "ModoIntegracionLoaded": ModoIntegracionLoaded, "TipoMonedaLoaded": TipoMonedaLoaded }
     return render(request, 'weather/configuration.html', context)
+
+@api_view(["POST"])
+@csrf_exempt
+def IdealWeight(request):
+
+    SecretKeyLoaded = ""
+    if request.COOKIES.get('SecretKey'):
+        SecretKeyLoaded  = request.COOKIES['SecretKey']
+    try:
+        signatureReceived = str(request.META.get("HTTP_PE_SIGNATURE"))
+
+        if signatureReceived:
+            print(SecretKeyLoaded, "SecretKeyLoaded HEADER")
+            print(signatureReceived, "HEADER")
+            body = json.loads(request.body)
+            print(body, "body")
+            # signatureHashed = hmac.new(bytes(signatureReceived , 'latin-1'), msg = bytes(str(secretKeyLoaded) , 'latin-1'), digestmod = hashlib.sha256).hexdigest().upper()
+            return JsonResponse("SUCCESS!", safe=False)
+    except ValueError as e:
+        return Response(e.args[0],status.HTTP_400_BAD_REQUEST)
