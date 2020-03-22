@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 import time
 import hmac
 import hashlib
+import os
 from django.utils.dateparse import parse_datetime
 from datetime import datetime, timedelta
 import pytz
@@ -532,13 +533,16 @@ def indexConfiguration(request):
             print(body)
             if body:
                 print("201 AQUI")
-                with open('./static/cadmin/config.json') as f:
+                pth = os.path.abspath(os.path.dirname(__file__))
+                print(pth, "PATH CURRENT")
+                # # with open('./static/cadmin/config.json') as f:
+                with open(pth + './static/cadmin/config.json') as f:
                     data = json.load(f)
                 
                     print(data, "data")
                     data['SecretKey'] = value3
 
-                with open('./static/cadmin/configSaved.json', 'w') as f:
+                with open(pth + './static/cadmin/configSaved.json', 'w') as f:
                     json.dump(data, f)
 
                 isSaved = "1"
@@ -705,13 +709,24 @@ def indexConfiguration(request):
                 value11 = parse11.find('input').get('value')
 
                 # grabar secretKey archivoConfig
-                with open('./static/cadmin/config.json') as f:
+                # with open('./static/cadmin/config.json') as f:
+                #     data = json.load(f)
+                
+                #     print(data, "data")
+                #     data['SecretKey'] = value3
+
+                # with open('./static/cadmin/configSaved.json', 'w') as f:
+                #     json.dump(data, f)
+                pth = os.path.abspath(os.path.dirname(__file__))
+                print(pth, "PATH CURRENT")
+                # # with open('./static/cadmin/config.json') as f:
+                with open(pth + './static/cadmin/config.json') as f:
                     data = json.load(f)
                 
                     print(data, "data")
                     data['SecretKey'] = value3
 
-                with open('./static/cadmin/configSaved.json', 'w') as f:
+                with open(pth + './static/cadmin/configSaved.json', 'w') as f:
                     json.dump(data, f)
 
                 context = {
@@ -778,12 +793,32 @@ def indexConfiguration(request):
     context = { 'form': form2, 'key_filed': isSaved, "countryLoaded": countryLoaded, "ModoIntegracionLoaded": ModoIntegracionLoaded, "TipoMonedaLoaded": TipoMonedaLoaded }
     return render(request, 'weather/configuration.html', context)
 
-@api_view(["POST"])
+def ValidationAux(request):
+    if request.method == "GET":
+        context = {}
+        return render(request, 'weather/empty.html', context)
+
+@api_view(["GET","POST"])
 def IdealWeight(request):
+    if request.method == "GET":
+        print("INVOCO GET VALIDATION")
+        return Response(template_name="templates/weather/empty.html", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     if request.method == 'POST':
         signatureReceived = str(request.META.get("HTTP_PE_SIGNATURE"))
-        json_data = open('./static/cadmin/configSaved.json')   
+        pth = os.path.abspath(os.path.dirname(__file__))
+        print(pth, "PATH CURRENT")
+                # # # with open('./static/cadmin/config.json') as f:
+                # with open(pth + './static/cadmin/config.json') as f:
+                #     data = json.load(f)
+                
+                #     print(data, "data")
+                #     data['SecretKey'] = value3
+
+                # with open(pth + './static/cadmin/configSaved.json', 'w') as f:
+                #     json.dump(data, f)
+        json_data = open(pth + './static/cadmin/configSaved.json')
+        # "{% static 'cadmin/css/style.css' %}
         data1 = json.load(json_data) # deserialises it
         json_data.close()
 
