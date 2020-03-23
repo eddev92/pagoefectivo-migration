@@ -92,9 +92,9 @@ def index(request):
 
             print("entro boton PAGAR")
             # print(dateFinalFormated, "datetime.now() HORA EXACTA DE LA GENERACION DEL PROCESO")
-            dateNowAddTimeToExpiration = datetime.now()
-
-            cutDateNowAddTimeToExpiration = str(dateNowAddTimeToExpiration.replace(tzinfo=pytz.utc))
+            dateNowAddTimeToExpiration = datetime.now((pytz.timezone('America/Lima')))
+            print(dateNowAddTimeToExpiration, "DATE NOW pytz.timezone('America/Lima')")
+            cutDateNowAddTimeToExpiration = str(dateNowAddTimeToExpiration)
             cutDateNowAddTimeToExpiration = cutDateNowAddTimeToExpiration.replace('.', " ")                
             print(cutDateNowAddTimeToExpiration, "cutDateNowAddTimeToExpiration replace")
             aux = cutDateNowAddTimeToExpiration.split(' ')
@@ -128,14 +128,23 @@ def index(request):
                     "accessKey": AccessKeyLoaded,
                     "idService": int(IDComercioLoaded),
                     "dateRequest": dateFinalFormated,
-                    "hashString": hex_dig
+                    "hashString": str(hex_dig)
                     }
 
             if bodyAuthorization:
+                bodyStr = str(bodyAuthorization)
+                lengtStr = len(bodyStr)
                 headers_data = { 
-                    'content-type': 'application/json; charset=UTF-8'
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    # 'Connection': 'keep-alive',
+                    # 'Content-Length': str(lengtStr),
+                    # 'X-Frame-Options': 'SAMEORIGIN',
+                    # 'X-Content-Type-Options': 'nosniff',
+                    # 'X-XSS-Protection': '1; mode=block',
+                    # 'Strict-Transport-Security': 'max-age=7884000'
                 }
                 print(bodyAuthorization, "bodyAuthorization")
+                print(headers_data, "headers_data")
                 response = requests.post('https://pre1a.services.pagoefectivo.pe/v1/authorizations', bodyAuthorization, headers=headers_data)
                 print(response.status_code, "response.status_code AUTHORIZATION")
                 print(response.text)
@@ -174,7 +183,7 @@ def index(request):
                         print(responseAuthJson["data"]["token"], "TOKEN")
 
                         headers_data_cip = {
-                            'content-type': 'application/json; charset=UTF-8',
+                            'Content-Type': 'application/json; charset=UTF-8',
                             'Accept-Language': 'es-PE',
                             'Origin': 'web',
                             'Authorization': 'Bearer' + tokenAux
