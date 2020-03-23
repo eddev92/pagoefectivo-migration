@@ -104,8 +104,8 @@ def index(request):
 
             # CONVERT DATE EXPIRY FORMAT
             houseAdded = int(timeExpiration)
-            dateExpiryRequest = datetime.now() + timedelta(hours=houseAdded)
-            cutDateExpiryNowAddTimeToExpiration = str(dateExpiryRequest.replace(tzinfo=pytz.utc))
+            dateExpiryRequest = datetime.now((pytz.timezone('America/Lima'))) + timedelta(hours=houseAdded)
+            cutDateExpiryNowAddTimeToExpiration = str(dateExpiryRequest)
             cutDateExpiryNowAddTimeToExpiration = cutDateExpiryNowAddTimeToExpiration.replace('.', " ")                
             print(cutDateExpiryNowAddTimeToExpiration, "cutDateExpiryNowAddTimeToExpiration replace")
             auxExpiry = cutDateExpiryNowAddTimeToExpiration.split(' ')
