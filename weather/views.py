@@ -27,6 +27,7 @@ from django.core import serializers
 from django.conf import settings
 from django.template.loader import get_template 
 
+# FUNCION PARA GENERAR O HOME "/"
 @csrf_exempt
 def index(request):
     bodyAuthorization = {}
@@ -52,26 +53,21 @@ def index(request):
     
     if request.COOKIES.get('TipoMoneda'):
         currencyLoaded  = request.COOKIES['TipoMoneda']
-        print(currencyLoaded, "currencyLoaded")
     
     
     if request.COOKIES.get('Monto'):
         montoLoaded  = request.COOKIES['Monto']
-        print(montoLoaded, "montoLoaded")
     
     if request.COOKIES.get('EmailComercio'):
         emailLoaded  = request.COOKIES['EmailComercio']
-        print(emailLoaded, "emailLoaded")
 
     if montoLoaded:
         auxMontGenerate = float(montoLoaded)
         auxMontGenerate = "{:.2f}".format(auxMontGenerate)
-        print(auxMontGenerate, "auxMontGenerate convert")
     else:
         auxMontGenerate = ""
 
     if request.method == "GET":
-        print("AQUI GET HOME")
         context = {"esPostBack": esPostBack, "country": countryLoaded, "montoFromConfg": auxMontGenerate, "currencyLoaded": currencyLoaded}
         response = render(request, 'weather/weather.html', context)
         return response
@@ -90,94 +86,50 @@ def index(request):
             if request.COOKIES.get('TiempoExpiracionPago'):
                 timeExpiration  = request.COOKIES['TiempoExpiracionPago']
 
-            print("entro boton PAGAR")
             # print(dateFinalFormated, "datetime.now() HORA EXACTA DE LA GENERACION DEL PROCESO")
             dateNowAddTimeToExpiration = datetime.now((pytz.timezone('America/Lima')))
-            print(dateNowAddTimeToExpiration, "DATE NOW pytz.timezone('America/Lima')")
             cutDateNowAddTimeToExpiration = str(dateNowAddTimeToExpiration)
-            cutDateNowAddTimeToExpiration = cutDateNowAddTimeToExpiration.replace('.', " ")                
-            print(cutDateNowAddTimeToExpiration, "cutDateNowAddTimeToExpiration replace")
+            cutDateNowAddTimeToExpiration = cutDateNowAddTimeToExpiration.replace('.', " ")
             aux = cutDateNowAddTimeToExpiration.split(' ')
-            print(aux[0], "split")
             dateFinalFormated = aux[0] + "T" + aux[1] + "-05:00"
-            print(dateFinalFormated, "dateFinalFormated")
 
-            # CONVERT DATE EXPIRY FORMAT
+            # CONVERSION DE FECHA A FORMATO ATOM (AMERICA/LATINA)
             houseAdded = int(timeExpiration)
             dateExpiryRequest = datetime.now((pytz.timezone('America/Lima'))) + timedelta(hours=houseAdded)
             cutDateExpiryNowAddTimeToExpiration = str(dateExpiryRequest)
-            cutDateExpiryNowAddTimeToExpiration = cutDateExpiryNowAddTimeToExpiration.replace('.', " ")                
-            print(cutDateExpiryNowAddTimeToExpiration, "cutDateExpiryNowAddTimeToExpiration replace")
+            cutDateExpiryNowAddTimeToExpiration = cutDateExpiryNowAddTimeToExpiration.replace('.', " ")
             auxExpiry = cutDateExpiryNowAddTimeToExpiration.split(' ')
-            print(auxExpiry[0], "split")
             dateExpiryFinalFormated = auxExpiry[0] + "T" + auxExpiry[1] + "-05:00"
-            print(dateExpiryFinalFormated, "dateExpiryFinalFormated")
-            #FIN FORMAT DATE ATOM
+            ####
 
             auxMont = float(montoLoaded)
             auxMont = "{:.2f}".format(auxMont)
-            print(auxMont, "auxMont convert")
 
+            # GENERACION DE HASH sha256 PARA CABECERA 
             parametro = str(IDComercioLoaded) + "." + AccessKeyLoaded + "." + SecretKeyLoaded + "." + dateFinalFormated
-            print (parametro, "parametro")
-            hash_object = hashlib.sha256(b'{{parametro}}')
-            hex_dig = hash_object.hexdigest()
-            print(hex_dig, "HASH")
+            parametro = parametro.encode('utf-8')
+            hash_object = hashlib.sha256(parametro).hexdigest()
+            ######
 
             bodyAuthorization = {
                     "accessKey": AccessKeyLoaded,
                     "idService": int(IDComercioLoaded),
                     "dateRequest": dateFinalFormated,
-                    "hashString": str(hex_dig)
+                    "hashString": hash_object
                     }
 
             if bodyAuthorization:
-                bodyStr = str(bodyAuthorization)
-                lengtStr = len(bodyStr)
                 headers_data = { 
                     'Content-Type': 'application/json; charset=UTF-8',
-                    # 'Connection': 'keep-alive',
-                    # 'Content-Length': str(lengtStr),
-                    # 'X-Frame-Options': 'SAMEORIGIN',
-                    # 'X-Content-Type-Options': 'nosniff',
-                    # 'X-XSS-Protection': '1; mode=block',
-                    # 'Strict-Transport-Security': 'max-age=7884000'
                 }
-                print(bodyAuthorization, "bodyAuthorization")
-                print(headers_data, "headers_data")
-                response = requests.post('https://pre1a.services.pagoefectivo.pe/v1/authorizations', bodyAuthorization, headers=headers_data)
+                
+                # LLAMADA AL SERVICIO /AUTHORIZATIONS
+                response = requests.post('https://pre1a.services.pagoefectivo.pe/v1/authorizations', json=bodyAuthorization, headers=headers_data)
                 print(response.status_code, "response.status_code AUTHORIZATION")
-                print(response.text)
-                print(response.headers, "HEADERS")
-                #DESCOMENTAR CUANDO SE PRUEBA CON CREDENCIALES CORRECTAS
                 responseAuthJson = response.json()
-                resAux = {
-                    "code": "100",
-                    "message": "Solicitud exitosa.",
-                    "data": {
-                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJCSzIiLCJqdGkiOiJiYWRkZjdjNC1hMjllLTRmNDYtYTgzMy0wMDZjOWI2MjA4MTMiLCJuYW1laWQiOiIxMDI4IiwiZXhwIjoxNTc1OTg5NTYzfQ.r7USRyoIoCrgJOsLvC41fN-aIcBQ2uHhNhsPBvFW-IQ",
-                    "codeService": "SRV",
-                    "tokenStart": "2019-12-09T16:15:19-05:00",
-                    "tokenExpires": "2019-12-09T18:15:19-05:00",
-                        }
-                    }
-                resAuxAuth = {
-                    "code": "100",
-                    "message": "Solicitud exitosa.",
-                    "data": {
-                        "cip": 2523136,
-                        "currency": "PEN",
-                        "amount": 201.01,
-                        "transactionCode": "101",
-                        "dateExpiry": "2020-12-31T23:59:59-05:00",
-                        "cipUrl": "https://pre1a.payment.pagoefectivo.pe/AB803C1C-3266-4CFF-A236-4D9DD5AD260A.html"
-                        }
-                    }
                 if response.status_code == 201:
                     print("201 Auth")
-                    #DESCOMENTAR CUANDO SE PRUEBA CON CREDENCIALES CORRECTAS
-                    if responseAuthJson["code"] == "100":
-                    # if resAux["code"] == "100":
+                    if responseAuthJson["code"] == 100:
                         print(responseAuthJson, "responseAuthJson AUTORIZO Y GENERO TOKEN")
                         tokenAux = responseAuthJson["data"]["token"]
                         print(responseAuthJson["data"]["token"], "TOKEN")
@@ -185,8 +137,7 @@ def index(request):
                         headers_data_cip = {
                             'Content-Type': 'application/json; charset=UTF-8',
                             'Accept-Language': 'es-PE',
-                            'Origin': 'web',
-                            'Authorization': 'Bearer' + tokenAux
+                            'Authorization': 'Bearer' + " " + tokenAux
                             }
 
                         bodyCips = {
@@ -208,21 +159,20 @@ def index(request):
                             "userPhone": "9988776650",
                             "serviceId": int(IDComercioLoaded)
                         }
-                        print(bodyCips, "bodyCips")
-                        responseCips = requests.post('https://pre1a.services.pagoefectivo.pe/v1/cips', bodyCips, headers=headers_data_cip)
+
+                        # LLAMADA AL SERVICIO /CIPS
+                        responseCips = requests.post('https://pre1a.services.pagoefectivo.pe/v1/cips', json=bodyCips, headers=headers_data_cip)
                         print(responseCips.status_code, "status_code /cips")
-                        print(responseCips.headers, "HEADERS")
                         responseCipsJson = responseCips.json()
                         if responseCips.status_code == 201:
                             print("201 Cips")
-                            print(responseCipsJson, "RESPONSE AUTH 201 GENERO CIP Y SETEA EN COOKIES")
-                            esPostBack = 1
-                            if responseCipsJson["code"] == "100":
-                            # if resAuxAuth["code"] == "100":
+                            if responseCipsJson["code"] == 100:
+                                esPostBack = 1
                                 amountByService = responseCipsJson["data"]["amount"]
                                 enalceCip = responseCipsJson["data"]["cipUrl"]
-                                context = {"modoIntegrationLoaded": modoIntegrationLoaded, "country": countryLoaded, "montoFromConfg": amountByService, "enlaceCIP": enalceCip, "esPostBack": esPostBack}
+                                context = {"modoIntegrationLoaded": modoIntegrationLoaded, "country": countryLoaded, "currencyLoaded": currencyLoaded, "montoFromConfg": amountByService, "enlaceCIP": enalceCip, "esPostBack": esPostBack}
                                 response = render(request, 'weather/weather.html', context)
+                                # ALMACENAMIENTO DE VARIABLES EN MEMORIA
                                 response.set_cookie('token', tokenAux)
                                 response.set_cookie('cipAuth', responseCipsJson["data"]["cip"])
                                 response.set_cookie('cipUrlAuth', responseCipsJson["data"]["cipUrl"])
@@ -244,6 +194,7 @@ def index(request):
     context = {"country": countryLoaded, "montoFromConfg": auxMontGenerate, "currencyLoaded": currencyLoaded}
     return render(request, 'weather/weather.html', context)
 
+# FUNCION PARA /NOTIFICATION
 @csrf_exempt
 def indexNotification(request):  
     isSaved = "0"
@@ -290,15 +241,11 @@ def indexNotification(request):
         value1 = soup.find('input').get('value')
         value2 = soup2.find('input').get('value')
 
-        print(form , "FORM NOTIFICA ENVIANDO")
         if value1 and value2:
-            print("ENTRO NOTIFICA VALIDA")
             if not value1:
-                print("REQUESTBODY COMPLETO")
                 emptySignature = "2"
             
             if not value2:
-                print("SIGNATURE COMPLETO")
                 emptyRqBody = "2"
 
             if request.COOKIES.get('penAuth'):
@@ -324,9 +271,7 @@ def indexNotification(request):
             }
 
             signature = hmac.new(bytes(body["requestBody"] , 'latin-1'), msg = bytes(str(secretKeyLoaded) , 'latin-1'), digestmod = hashlib.sha256).hexdigest().upper()
-            print(signature, "hmac.new 256 signature en Validacion")
             signatureAux = body["PE-Signature"]
-            print(signatureAux, "PE-Signature")
 
             if signature == str(signatureAux):
                 form.save()
@@ -341,20 +286,18 @@ def indexNotification(request):
                 return render(request, 'weather/notification.html', context)
         else:
             if not value1:
-                print("REQUESTBODY VACIO")
                 emptyRqBody = "1"
             
             if not value2:
-                print("SIGNATURE VACIO")
                 emptySignature = "1"
 
-            print(emptySignature,"FORM INVALIDO O CAMPOS INCOMPLETOS")
             context = {'form': form, 'key_filed': isSaved, "emptyRq": emptyRqBody, 'emptySigt': emptySignature}
             return render(request, 'weather/notification.html', context)
 
     context = {'form': form, 'key_filed': isSaved}
     return render(request, 'weather/notification.html', context)
 
+# FUNCION PARA /CONFIGURATION
 @csrf_exempt
 def indexConfiguration(request):
     isSaved = "0"
@@ -363,7 +306,6 @@ def indexConfiguration(request):
     countryLoaded = ""
     ModoIntegracionLoaded = ""
     TipoMonedaLoaded = ""
-    formLoaded = ""
     ServidorPagoEfectivoLoaded = ""
     AccessKeyLoaded = ""
     SecretKeyLoaded = ""
@@ -507,25 +449,21 @@ def indexConfiguration(request):
         value7 = soup7.find('input').get('value')
         value9 = soup9.find('input').get('value')
         value10 = soup10.find('input').get('value')
-        # if form2.is_valid():
+
         if not value9:
             if request.COOKIES.get('pais'):
                 value9  = request.COOKIES['pais']
-                print(value9, "VALUE9 PAIS")
 
         if not value7:
             if request.COOKIES.get('ModoIntegracion'):
                 value7  = request.COOKIES['ModoIntegracion']
-            print(value7, "value7 INTEG")
 
         if not value10:
             if request.COOKIES.get('TipoMoneda'):
                 value10  = request.COOKIES['TipoMoneda']
-            print(value10, "value10 MONED")
 
 
         if value1 and value2 and value3 and value4 and value5 and value6 and value7 and value8 and value9 and value10 and value11:
-            print("form2 is valid")
 
             body = {
                     "ServidorPagoEfectivo": value1,
@@ -540,12 +478,8 @@ def indexConfiguration(request):
                     "TipoMoneda": value10,
                     "Monto":value11
             }
-            print(body)
             if body:
-                print("201 AQUI")
                 pth = os.path.abspath(os.path.dirname(__file__))
-                print(pth, "PATH CURRENT")
-                # # with open('./static/cadmin/config.json') as f:
                 with open(pth + '/static/cadmin/config.json') as f:
                     data = json.load(f)
                 
@@ -577,52 +511,39 @@ def indexConfiguration(request):
                 form2.save()
                 isSaved = "2"
                 context = { 'form': form2, 'key_filed': isSaved }
-                print("is INValid AQUI")
                 return render(request, 'weather/configuration.html', context)
         else:
-            print("FALTA ALGUN CAMPO")
             if not value1:
-                print("servidor VACIO")
                 empty1 = "1"
             
             if not value2:
-                print("accsess VACIO")
                 empty2 = "1"
 
             if not value3:
-                print("secret VACIO")
                 empty3 = "1"
             
             if not value4:
-                print("SIGNATURE VACIO")
                 empty4 = "1"
 
-            if not value5:
-                print("REQUESTBODY VACIO")
+            if not value5:    
                 empty5 = "1"
             
             if not value6:
-                print("SIGNATURE VACIO")
                 empty6 = "1"
 
-            if not value7:
-                print("REQUESTBODY VACIO")
+            if not value7:    
                 empty7 = "1"
             
             if not value8:
-                print("SIGNATURE VACIO")
                 empty8 = "1"
 
-            if not value9:
-                print("REQUESTBODY VACIO")
+            if not value9:    
                 empty9 = "1"
             
             if not value10:
-                print("SIGNATURE VACIO")
                 empty10 = "1"
 
-            if not value11:
-                print("REQUESTBODY VACIO")
+            if not value11:    
                 empty11 = "1"
 
             context = { 'form': form2, 'key_filed': isSaved, "empty1": empty1, "empty2": empty2, "empty3": empty3, "empty4": empty4, "empty5": empty5, "empty6": empty6, "empty8": empty8, "empty10": empty10, "empty7": empty7, "empty11": empty11, "empty9": empty9 }
@@ -678,9 +599,7 @@ def indexConfiguration(request):
                     "TipoMoneda": value10,
                     "Monto":value11
             }
-            print(body)
             if body:
-                print("201 AL FINAL")
                 isSaved = "1"
                 aux1 = str(form2.__getitem__('ServidorPagoEfectivo'))
                 aux2 = str(form2.__getitem__('AccessKey'))
@@ -719,17 +638,7 @@ def indexConfiguration(request):
                 value11 = parse11.find('input').get('value')
 
                 # grabar secretKey archivoConfig
-                # with open('./static/cadmin/config.json') as f:
-                #     data = json.load(f)
-                
-                #     print(data, "data")
-                #     data['SecretKey'] = value3
-
-                # with open('./static/cadmin/configSaved.json', 'w') as f:
-                #     json.dump(data, f)
                 pth = os.path.abspath(os.path.dirname(__file__))
-                print(pth, "PATH CURRENT")
-                # # with open('./static/cadmin/config.json') as f:
                 with open(pth + '/static/cadmin/config.json') as f:
                     data = json.load(f)
                 
@@ -796,53 +705,36 @@ def indexConfiguration(request):
                     "ModoIntegracionLoaded": ModoIntegracionLoaded,
                     "countryLoaded": countryLoaded
                 }
-                print("is INValid AL FINAL")
                 return render(request, 'weather/configuration.html', context)
 
 
     context = { 'form': form2, 'key_filed': isSaved, "countryLoaded": countryLoaded, "ModoIntegracionLoaded": ModoIntegracionLoaded, "TipoMonedaLoaded": TipoMonedaLoaded }
     return render(request, 'weather/configuration.html', context)
 
+# FUNCION PARA /VALIDATION, RETORNARA WEB EN BLANCO
 def ValidationAux(request):
     if request.method == "GET":
         context = {}
         return render(request, 'weather/empty.html', context)
 
+# FUNCION PARA /VALIDATION DESDE POSTMAN "/validation"
 @api_view(["GET","POST"])
 def IdealWeight(request):
     if request.method == "GET":
-        print("INVOCO GET VALIDATION")
         template = get_template("weather/empty.html")
-        # HttpResponse(status=204)
         return HttpResponse(template.render(), status=500)
-        # return Response(template_name="templates/weather/empty.html", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     if request.method == 'POST':
         signatureReceived = str(request.META.get("HTTP_PE_SIGNATURE"))
         pth = os.path.abspath(os.path.dirname(__file__))
-        print(pth, "PATH CURRENT")
-                # # # with open('./static/cadmin/config.json') as f:
-                # with open(pth + './static/cadmin/config.json') as f:
-                #     data = json.load(f)
-                
-                #     print(data, "data")
-                #     data['SecretKey'] = value3
-
-                # with open(pth + './static/cadmin/configSaved.json', 'w') as f:
-                #     json.dump(data, f)
         json_data = open(pth + '/static/cadmin/configSaved.json')
-        # "{% static 'cadmin/css/style.css' %}
-        data1 = json.load(json_data) # deserialises it
+        data1 = json.load(json_data)
         json_data.close()
 
         if signatureReceived:
-            print(data1["SecretKey"], "SecretKeyLoaded DATA CONFIG.JSON LOADED")
             secretKeyLoadedConfig = data1["SecretKey"]
             body = json.loads(request.body)
-            print(body, "body")
             signatureHashed = hmac.new(bytes(str(body) , 'latin-1'), msg = bytes(str(secretKeyLoadedConfig) , 'latin-1'), digestmod = hashlib.sha256).hexdigest().upper()
-            print(signatureHashed, "signatureHashed GENERADO ")            
-            print(signatureReceived, "SIGNATURE FROM POSTMAN")
             if str(signatureReceived) == str(signatureHashed):
                 return JsonResponse({"code": "100", "message": "Solicitud con datos válidos"}, status=status.HTTP_200_OK, safe=False)
             else:

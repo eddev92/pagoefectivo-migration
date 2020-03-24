@@ -49,21 +49,14 @@
         <img src="{% static 'cadmin/img/vinetaAtras.png' %}" class="vinetaInferiorDerechaMenuPie alineado" />
             </div>
             
-        </div><!--barraMenu fin-->
+        </div>
 
 
         <div class="cuerpo" >
-        <!--cuerpo inicio-->
-        
-        <!-- <iframe <?=(isset($configuracion['ModoIntegracion']) && $configuracion['ModoIntegracion']=='IFR' && $esPostBack==1 ? "style='display: block'" : "style='display: none'"  );?>
-            src="{{enlaceCIP}}" class="marco" >
-        </iframe> -->
         {% if esPostBack == 1 and modoIntegrationLoaded == "IFR" %}
             <iframe src={{enlaceCIP}} class="marco"></iframe>
         {% endif %}
-        <!-- <div id="cuerpoContenido" <?=(isset($configuracion['ModoIntegracion']) && $configuracion['ModoIntegracion']=='IFR' && $esPostBack==1 ? "style='display: none'" : "style='display: block'"  );?> > -->
-        
-        {% if esPostBack == 0 %}
+        {% if esPostBack == 0 or esPostBack == 1 %}
         <div id="cuerpoContenido">
             <form id="generaFormulario" name="generaFormulario" method="post"  >
         
