@@ -43,7 +43,10 @@ def index(request):
     emailLoaded = ""
     auxMontGenerate = ""
     modoIntegrationLoaded = ""
-
+    urlServerLoaded = ""
+        
+    if request.COOKIES.get('ServidorPagoEfectivo'):
+        urlServerLoaded = request.COOKIES['ServidorPagoEfectivo']
     
     if request.COOKIES.get('ModoIntegracion'):
         modoIntegrationLoaded = request.COOKIES['ModoIntegracion']
@@ -62,8 +65,7 @@ def index(request):
         emailLoaded  = request.COOKIES['EmailComercio']
 
     if montoLoaded:
-        auxMontGenerate = float(montoLoaded)
-        auxMontGenerate = "{:.2f}".format(auxMontGenerate)
+        auxMontGenerate = str(montoLoaded)
     else:
         auxMontGenerate = ""
 
@@ -102,8 +104,7 @@ def index(request):
             dateExpiryFinalFormated = auxExpiry[0] + "T" + auxExpiry[1] + "-05:00"
             ####
 
-            auxMont = float(montoLoaded)
-            auxMont = "{:.2f}".format(auxMont)
+            auxMont = str(montoLoaded)
 
             # GENERACION DE HASH sha256 PARA CABECERA 
             parametro = str(IDComercioLoaded) + "." + AccessKeyLoaded + "." + SecretKeyLoaded + "." + dateFinalFormated
@@ -128,11 +129,11 @@ def index(request):
                 print(response.status_code, "response.status_code AUTHORIZATION")
                 responseAuthJson = response.json()
                 if response.status_code == 201:
+                    print(responseAuthJson, "RESPONSE AUTH")
                     print("201 Auth")
                     if responseAuthJson["code"] == 100:
                         print(responseAuthJson, "responseAuthJson AUTORIZO Y GENERO TOKEN")
                         tokenAux = responseAuthJson["data"]["token"]
-                        print(responseAuthJson["data"]["token"], "TOKEN")
 
                         headers_data_cip = {
                             'Content-Type': 'application/json; charset=UTF-8',
@@ -142,7 +143,7 @@ def index(request):
 
                         bodyCips = {
                             "currency": currencyLoaded,
-                            "amount": float(auxMont),
+                            "amount": auxMont,
                             "transactionCode": "208",
                             "dateExpiry": dateExpiryFinalFormated,
                             "paymentConcept": "Prueba 200",
@@ -165,6 +166,7 @@ def index(request):
                         print(responseCips.status_code, "status_code /cips")
                         responseCipsJson = responseCips.json()
                         if responseCips.status_code == 201:
+                            print(responseCipsJson, "RESPONSE CIPS")
                             print("201 Cips")
                             if responseCipsJson["code"] == 100:
                                 esPostBack = 1
@@ -178,7 +180,26 @@ def index(request):
                                 response.set_cookie('cipUrlAuth', responseCipsJson["data"]["cipUrl"])
                                 response.set_cookie('amountAuth', responseCipsJson["data"]["amount"])
                                 response.set_cookie('penAuth', responseCipsJson["data"]["currency"])
-                                return response
+
+                                if modoIntegrationLoaded == "RED":
+                                    pth = os.path.abspath(os.path.dirname(__file__))
+                                    with open(pth + '/static/cadmin/config.json') as f:
+                                        dataAppResponse = json.load(f)
+                
+                                        print(dataAppResponse, "data")
+                                        dataAppResponse['token'] = tokenAux
+                                        dataAppResponse['cipAuth'] = responseCipsJson["data"]["cip"]
+                                        dataAppResponse['cipUrlAuth'] = responseCipsJson["data"]["cipUrl"]
+                                        dataAppResponse['amountAuth'] = responseCipsJson["data"]["amount"]
+                                        dataAppResponse['penAuth'] = responseCipsJson["data"]["currency"]
+                                        dataAppResponse['SecretKey'] = SecretKeyLoaded
+
+                                    with open(pth + '/static/cadmin/configSaved.json', 'w') as f:
+                                        print(dataAppResponse, "data saved")
+                                        json.dump(dataAppResponse, f)
+                                    return HttpResponseRedirect(enalceCip)
+                                else:
+                                    return response
                         else:
                             print("NO SE GENERO CIP")
                             context = {"country": countryLoaded, "montoFromConfg": auxMontGenerate, "currencyLoaded": currencyLoaded, "esPostBack": esPostBack}
@@ -270,8 +291,12 @@ def indexNotification(request):
                 'requestBody': value1
             }
 
-            signature = hmac.new(bytes(body["requestBody"] , 'latin-1'), msg = bytes(str(secretKeyLoaded) , 'latin-1'), digestmod = hashlib.sha256).hexdigest().upper()
+            print(body, "BODY NOTIFICA ENVIADO")
             signatureAux = body["PE-Signature"]
+            signature = hmac.new(bytes(str(secretKeyLoaded) , 'latin-1'), msg = bytes(body["requestBody"] , 'latin-1'), digestmod = hashlib.sha256).hexdigest()
+            signatureAux = body["PE-Signature"]
+            print(signature, "signature generado requestBody + secretkey")
+            print(signatureAux, "PE-Signature enviado desde la aplicacion")
 
             if signature == str(signatureAux):
                 form.save()
@@ -501,8 +526,15 @@ def indexConfiguration(request):
                 response.set_cookie('NombreComercio', value5)
                 response.set_cookie('EmailComercio', value6)
                 response.set_cookie('ModoIntegracion', value7)
-                auxMont1 = float(value11)
-                auxMont1 = "{:.2f}".format(auxMont1)
+                auxMont1 = str(value11)
+                if auxMont1.find(".") != -1:
+                   splitMount = auxMont1.split(".")                                    
+                   charctsMount = len(splitMount[1])
+                   # VALIDACION DE CANTIDAD DE DECIMALES, SI TIENE UN DECIMAL, SE AUTOCOMPLETARA CON UN 0 AL FINAL
+                   if charctsMount == 1:
+                       auxMont1 = auxMont1 + "0"
+                else:
+                    auxMont1 = auxMont1 + ".00"
                 response.set_cookie('Monto', auxMont1)
                 response.set_cookie('TiempoExpiracionPago', value8)
                 response.set_cookie('TipoMoneda', value10)
@@ -672,7 +704,7 @@ def indexConfiguration(request):
                 response.set_cookie('TiempoExpiracionPago', value7)
                 auxMont1 = float(value8)
                 auxMont1 = "{:.2f}".format(auxMont1)
-                response.set_cookie('Monto', auxMont1)
+                response.set_cookie('Monto', str(auxMont1))
 
                 if value9:
                     response.set_cookie('pais', value9)
