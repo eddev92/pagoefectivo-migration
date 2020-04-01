@@ -253,7 +253,7 @@
                             </div>
                             <div id="precioSubTotal" class="alineado ancho60 margenInferior5" >
                                 {% if currencyLoaded == "PEN" and country != "" %}
-                                    S/.{{montoFromConfg}}
+                                    S/ {{montoFromConfg}}
                                 {% endif %}
                                 {% if currencyLoaded == "USD" and country != "" %}
                                     $ {{montoFromConfg}}
@@ -276,7 +276,7 @@
                             <div class="alineado ancho60" >
                                 <div id="precioTotalMoneda" class="alineado" ></div><div class="alineado" id="precioTotal" value="" >                                
                                     {% if currencyLoaded == "PEN" and country != "" %}
-                                        S/.{{montoFromConfg}}
+                                        S/ {{montoFromConfg}}
                                     {% endif %}
                                     {% if currencyLoaded == "USD" and country != "" %}
                                         $ {{montoFromConfg}}

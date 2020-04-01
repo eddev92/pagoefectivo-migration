@@ -38,5 +38,5 @@ class ConfigurationForm(ModelForm):
                     'TiempoExpiracionPago' : TextInput(attrs={'class' : 'input hidden', "type" : "hidden"}),
                     'TipoMoneda' : TextInput(attrs={'class' : 'input hidden', "type" : "hidden"}),
                     'Monto' : TextInput(attrs={'class' : 'input hidden', "type" : "hidden"}),
-                    'Pais' : TextInput(attrs={'class' : 'input hidden', "type" : "hidden"})
+                    'Pais' : TextInput(attrs={'class' : 'input hidden', "type" : "hidden", 'onchange':'handleCountry();'})
                     }

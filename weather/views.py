@@ -286,19 +286,17 @@ def indexNotification(request):
 
             value1 = parse1.find('input').get('value')
             value2 = parse2.find('input').get('value')
+            print(value1, "value1 body")
             body = {
                 'PE-Signature': value2,
                 'requestBody': value1
             }
 
-            print(body, "BODY NOTIFICA ENVIADO")
             signatureAux = body["PE-Signature"]
             signature = hmac.new(bytes(str(secretKeyLoaded) , 'latin-1'), msg = bytes(body["requestBody"] , 'latin-1'), digestmod = hashlib.sha256).hexdigest()
             signatureAux = body["PE-Signature"]
-            print(signature, "signature generado requestBody + secretkey")
-            print(signatureAux, "PE-Signature enviado desde la aplicacion")
 
-            if signature == str(signatureAux):
+            if str(signature) == str(signatureAux):
                 form.save()
                 isSaved = "1"
                 emptyField = ""
@@ -415,7 +413,9 @@ def indexConfiguration(request):
                 "TipoMonedaLoaded": "",
                 "ModoIntegracionLoaded": ""
             }
-            return render(request, 'weather/configuration.html', context)            
+            
+            response = render(request, 'weather/configuration.html', context)
+            return response
 
     if request.method == "GET":
         request.COOKIES.get('form')
@@ -577,7 +577,7 @@ def indexConfiguration(request):
 
             if not value11:    
                 empty11 = "1"
-
+            print("AQUIII")
             context = { 'form': form2, 'key_filed': isSaved, "empty1": empty1, "empty2": empty2, "empty3": empty3, "empty4": empty4, "empty5": empty5, "empty6": empty6, "empty8": empty8, "empty10": empty10, "empty7": empty7, "empty11": empty11, "empty9": empty9 }
             return render(request, 'weather/configuration.html', context)
 
@@ -722,6 +722,7 @@ def indexConfiguration(request):
                     response.set_cookie('ModoIntegracion', ModoIntegracionLoaded)
                 return response
             else:
+                print("AQUI")
                 isSaved = "2"
                 context = { 
                     'key_filed': isSaved,
@@ -766,7 +767,10 @@ def IdealWeight(request):
         if signatureReceived:
             secretKeyLoadedConfig = data1["SecretKey"]
             body = json.loads(request.body)
-            signatureHashed = hmac.new(bytes(str(body) , 'latin-1'), msg = bytes(str(secretKeyLoadedConfig) , 'latin-1'), digestmod = hashlib.sha256).hexdigest().upper()
+            bodyAux = {
+                "req": str(body).replace("'",'"').replace(" ", "")
+            }
+            signatureHashed = hmac.new(bytes(str(secretKeyLoadedConfig) , 'latin-1'), msg = bytes(bodyAux["req"] , 'latin-1'), digestmod = hashlib.sha256).hexdigest()
             if str(signatureReceived) == str(signatureHashed):
                 return JsonResponse({"code": "100", "message": "Solicitud con datos válidos"}, status=status.HTTP_200_OK, safe=False)
             else:

@@ -1,4 +1,10 @@
-#!/usr/bin/env python
+# 
+#   - Author      : Edward David Llanca Haro
+#   - Email       : edwarllanca@hotmail.com  
+#   - Date        : 28/03/2020
+#   - Description : Página que sirve para validar la notificación mediante web
+#
+
 import os
 import sys
 
