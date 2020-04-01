@@ -236,7 +236,17 @@
                     <!-- fin de fila1 -->
                     <!-- fila2 -->
                         <div class="siguienteLinea margenIzquierdo80 margenSuperior60" >
-                            <strong id="articuloMoneda" ></strong><strong id="articuloPrecio" ></strong>
+                            <strong id="articuloMoneda" >
+                                {% if currencyLoaded == "PEN" and country != "" %}
+                                S/
+                            {% endif %}
+                            {% if currencyLoaded == "USD" and country != "" %}
+                                $
+                            {% endif %}
+                            </strong>
+                            <strong id="articuloPrecio" >
+                                {{montoFromConfg}}
+                            </strong>
                         </div>
                     <!-- fin de fila2 -->		
                     

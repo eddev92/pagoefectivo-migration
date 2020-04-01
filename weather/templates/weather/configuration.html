@@ -174,8 +174,8 @@
                   Ecuador
                 {% endif %}
               </option>
-            <option value="PER" id="optPer">Perú</option>
-            <option value="ECU" id="optEcu" >Ecuador</option>		
+            <option value="PER" >Perú</option>
+            <option value="ECU" >Ecuador</option>		
         </select>
         <!-- {% if empty9 == "1" %}		 --> 
         <!-- {% endif %}	 -->
@@ -185,7 +185,7 @@
         <div class="alineado margenInferior5" >
         <div class="etiqueta" >Tipo de moneda (*)</div>
         <select name="TipoMoneda" id="TipoMoneda" class="combo ancho200"  >
-        <option id="optDefaultCurrency" value="{% if TipoMonedaLoaded %}{{TipoMonedaLoaded}}{% else %}{{form.TipoMoneda.value}}{% endif %}" disabled selected hidden >          
+        <option value="{% if TipoMonedaLoaded %}{{TipoMonedaLoaded}}{% else %}{{form.TipoMoneda.value}}{% endif %}" disabled selected hidden >          
           {% if not form.TipoMoneda.value and not TipoMonedaLoaded %}
             Moneda de recaudación
           {% endif %}
@@ -196,10 +196,9 @@
             Dólares ( $ )
           {% endif %}
         </option>
-  
 
-        <option id="soles" value="PEN" >Soles ( S/ )</option>
-        <option id="dolares" value="USD" >Dólares ( $ ) </option>
+        <option id="soles" value="PEN" >Soles</option>
+        <option id="dolares" value="USD" >Dólares</option>
         </select>
         <!-- {% if empty11 == "1" %}		 --> 
         <!-- {% endif %}	 -->
@@ -209,7 +208,7 @@
         <div class="alineado margenIzquierdo100 margenInferior5" >
         <div class="etiqueta"  >Monto (*)</div>
         <input name="Monto" id="Monto" value="{% if MontoLoaded %}{{MontoLoaded}}{% else %}{{form.Monto.value}}{% endif %}" 
-        type="text" class="cajaTexto ancho200" placeholder=""  />
+        type="text" class="cajaTexto ancho200" placeholder="" onkeyup="verificarMonto(event,this)" />
         <!-- {% if empty11 == "1" %}		 --> 
         <!-- {% endif %}	 -->
         <div id="MontoMensaje" class="mensajeRequerido" style="display: none;">Ingresa un monto</div>
@@ -585,6 +584,40 @@
         }
       })
     }
+    function verificarMonto(evt,input){
+      const valueAmount = inputMonto[0]
+      const aux = valueAmount.value
+		  var key = window.Event ? evt.which : evt.keyCode;    
+	    var chark = String.fromCharCode(key);
+	    var tempValue = input.value+chark;
+      
+	    if(key >= 48 && key <= 57 || key == 190 || key === 188){
+          console.log('is numer')
+	    }
+      else{
+        if (valueAmount.value.length > 0) {
+          result = filtro(valueAmount.value)
+    
+          if (!result) {
+           console.log(result)
+           inputMonto[0].value = inputMonto[0].value.slice(0, -1);
+          }
+        }
+         else {
+        inputMonto[0].style.border = "1px solid red";
+        msgMonto[0].style.display = "block";
+         valueAmount.value = ""
+        }
+	    }
+	}
+    function filtro(valor){
+	    var preg = /^([0-9]+\.?[0-9]{0,2})$/; 
+	    if(preg.test(valor) === true){
+	        return true;
+	    }else{
+	       return false;
+	    }
+	}
     </script>
 </body>
 
