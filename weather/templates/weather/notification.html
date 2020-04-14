@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Notificación</title>
     <link rel="stylesheet" type="text/css" href="{% static 'cadmin/css/style.css' %}">
 </head>
 
@@ -75,15 +75,15 @@
     </div>
       
       <div class="siguienteLinea margenInferior5" >
-      <div class="etiqueta" >Request Body (*)</div>        
-      <textarea id="requestBody" name="requestBody" type="text" class="cajaTexto ancho500 alto150" placeholder="Data" >{"eventType" : "cip.paid","operationNumber" : "","data" : {"cip" : "{{cipByService}}","currency" : "{{currencyFromConfig}}","amount" : {{montoFromConfig}}}}</textarea>	
+      <div class="etiqueta" >Request Body (*)</div>
+      <textarea id="requestBody" name="requestBody" type="text" class="cajaTexto ancho500 alto150" placeholder="Data" >{% if not cleanBody %}{"eventType" : "cip.paid","operationNumber" : "","data" : {"cip" : "","currency" : "","amount" : }}{% endif %}</textarea>	
       {% if emptyRq == "1" %}
       <div id="requestBodyMensaje" class="mensajeRequerido" >Cargue la requestBody</div>
       {% endif %}
       </div>
     
       <div class="siguienteLinea" >
-      <div class="alineado margenIzquierdo40 " >
+      <div class="alineado margenIzquierdo40 limpiar" >
       <input id="btnLimpiar" type="submit" name="btnLimpiar" class="SubbotonSecundario ancho150 margenSuperior30" value="Limpiar" ></input>		
       </div>		
       

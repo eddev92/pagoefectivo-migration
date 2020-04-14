@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Generar CIP</title>
     <link rel="stylesheet" type="text/css" href="{% static 'cadmin/css/style.css' %}">
 </head>
 
@@ -56,7 +56,7 @@
         {% if esPostBack == 1 and modoIntegrationLoaded == "IFR" %}
             <iframe src={{enlaceCIP}} class="marco"></iframe>
         {% endif %}
-        {% if esPostBack == 0 or esPostBack == 1 %}
+        {% if esPostBack == 0 %}
         <div id="cuerpoContenido">
             <form id="generaFormulario" name="generaFormulario" method="post"  >
         

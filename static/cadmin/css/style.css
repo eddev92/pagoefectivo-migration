@@ -425,10 +425,14 @@ border: 1px solid #ffa500;
 
 }
 
+.limpiar {
+  margin-top: 26px;
+}
 
-
-.botonSecundario
-{
+.lblLimpiar, .guardarConfig {
+  display: block;
+}
+#btnLimpiar,#btnCancelar {
 
 padding: 10px;
 text-align: center;
@@ -444,11 +448,8 @@ color: #000000;
  
 }
 
-.botonSecundario:hover
-{
-
-border: 1px solid #555555;
- 
+#btnLimpiar,#btnCancelar:hover{
+border: 1px solid #555555; 
 }
 
 input:focus, textarea:focus, select:focus

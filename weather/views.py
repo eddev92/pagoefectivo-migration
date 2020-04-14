@@ -14,6 +14,7 @@ import os
 from django.utils.dateparse import parse_datetime
 from datetime import datetime, timedelta
 import pytz
+import re
 from django.utils import timezone
 # djangorest framework
 from django.shortcuts import render
@@ -44,6 +45,7 @@ def index(request):
     auxMontGenerate = ""
     modoIntegrationLoaded = ""
     urlServerLoaded = ""
+    auxMoun = 0
         
     if request.COOKIES.get('ServidorPagoEfectivo'):
         urlServerLoaded = request.COOKIES['ServidorPagoEfectivo']
@@ -64,8 +66,10 @@ def index(request):
     if request.COOKIES.get('EmailComercio'):
         emailLoaded  = request.COOKIES['EmailComercio']
 
+    auxMoun = re.sub("^(-?\d+)(\d{3})", '\g<1>,\g<2>', montoLoaded)
+
     if montoLoaded:
-        auxMontGenerate = str(montoLoaded)
+        auxMontGenerate = str(auxMoun)
     else:
         auxMontGenerate = ""
 
@@ -129,7 +133,6 @@ def index(request):
                 print(response.status_code, "response.status_code AUTHORIZATION")
                 responseAuthJson = response.json()
                 if response.status_code == 201:
-                    print(responseAuthJson, "RESPONSE AUTH")
                     print("201 Auth")
                     if responseAuthJson["code"] == 100:
                         print(responseAuthJson, "responseAuthJson AUTORIZO Y GENERO TOKEN")
@@ -149,6 +152,7 @@ def index(request):
                             "paymentConcept": "Prueba 200",
                             "additionalData": "datos adicionales de prueba",
                             "userEmail": emailLoaded,
+                            "adminEmail": emailLoaded,
                             "userId": 200,
                             "userName": "Chester",
                             "userLastName": "Alvarado",
@@ -166,7 +170,6 @@ def index(request):
                         print(responseCips.status_code, "status_code /cips")
                         responseCipsJson = responseCips.json()
                         if responseCips.status_code == 201:
-                            print(responseCipsJson, "RESPONSE CIPS")
                             print("201 Cips")
                             if responseCipsJson["code"] == 100:
                                 esPostBack = 1
@@ -182,21 +185,6 @@ def index(request):
                                 response.set_cookie('penAuth', responseCipsJson["data"]["currency"])
 
                                 if modoIntegrationLoaded == "RED":
-                                    pth = os.path.abspath(os.path.dirname(__file__))
-                                    with open(pth + '/static/cadmin/config.json') as f:
-                                        dataAppResponse = json.load(f)
-                
-                                        print(dataAppResponse, "data")
-                                        dataAppResponse['token'] = tokenAux
-                                        dataAppResponse['cipAuth'] = responseCipsJson["data"]["cip"]
-                                        dataAppResponse['cipUrlAuth'] = responseCipsJson["data"]["cipUrl"]
-                                        dataAppResponse['amountAuth'] = responseCipsJson["data"]["amount"]
-                                        dataAppResponse['penAuth'] = responseCipsJson["data"]["currency"]
-                                        dataAppResponse['SecretKey'] = SecretKeyLoaded
-
-                                    with open(pth + '/static/cadmin/configSaved.json', 'w') as f:
-                                        print(dataAppResponse, "data saved")
-                                        json.dump(dataAppResponse, f)
                                     return HttpResponseRedirect(enalceCip)
                                 else:
                                     return response
@@ -229,6 +217,7 @@ def indexNotification(request):
     emptyRqBody = ""
     value1 = ""
     value2 = ""
+    cleanBody = False
 
     if request.method == "GET":
         if request.COOKIES.get('penAuth'):
@@ -248,7 +237,8 @@ def indexNotification(request):
 
     if request.method == "POST":
         if request.POST.get("btnLimpiar"):
-            context = {}
+            cleanBody = True
+            context = {"cleanBody": cleanBody}
             return render(request, 'weather/notification.html', context)
 
         form = NotificationForm(request.POST)
@@ -286,17 +276,19 @@ def indexNotification(request):
 
             value1 = parse1.find('input').get('value')
             value2 = parse2.find('input').get('value')
-            print(value1, "value1 body")
             body = {
                 'PE-Signature': value2,
                 'requestBody': value1
             }
 
+            print(body, "BODY NOTIFICA ENVIADO")
             signatureAux = body["PE-Signature"]
             signature = hmac.new(bytes(str(secretKeyLoaded) , 'latin-1'), msg = bytes(body["requestBody"] , 'latin-1'), digestmod = hashlib.sha256).hexdigest()
             signatureAux = body["PE-Signature"]
+            print(signature, "signature generado requestBody + secretkey")
+            print(signatureAux, "PE-Signature enviado desde la aplicacion")
 
-            if str(signature) == str(signatureAux):
+            if signature == str(signatureAux):
                 form.save()
                 isSaved = "1"
                 emptyField = ""
@@ -413,9 +405,7 @@ def indexConfiguration(request):
                 "TipoMonedaLoaded": "",
                 "ModoIntegracionLoaded": ""
             }
-            
-            response = render(request, 'weather/configuration.html', context)
-            return response
+            return render(request, 'weather/configuration.html', context)            
 
     if request.method == "GET":
         request.COOKIES.get('form')
@@ -577,7 +567,7 @@ def indexConfiguration(request):
 
             if not value11:    
                 empty11 = "1"
-            print("AQUIII")
+
             context = { 'form': form2, 'key_filed': isSaved, "empty1": empty1, "empty2": empty2, "empty3": empty3, "empty4": empty4, "empty5": empty5, "empty6": empty6, "empty8": empty8, "empty10": empty10, "empty7": empty7, "empty11": empty11, "empty9": empty9 }
             return render(request, 'weather/configuration.html', context)
 
@@ -722,7 +712,6 @@ def indexConfiguration(request):
                     response.set_cookie('ModoIntegracion', ModoIntegracionLoaded)
                 return response
             else:
-                print("AQUI")
                 isSaved = "2"
                 context = { 
                     'key_filed': isSaved,
@@ -765,12 +754,41 @@ def IdealWeight(request):
         json_data.close()
 
         if signatureReceived:
+            amountReplaced = ""
             secretKeyLoadedConfig = data1["SecretKey"]
             body = json.loads(request.body)
+            amountReceive = body['data']['amount']
+            auxMont = amountReceive
+            auxMont1 = str(amountReceive)
+
+            if auxMont1.find(".") != -1:
+                splitMount = auxMont1.split(".")                                    
+                charctsMount = len(splitMount[1])
+                # VALIDACION DE CANTIDAD DE DECIMALES, SI TIENE UN DECIMAL, SE AUTOCOMPLETARA CON UN 0 AL FINAL
+                if charctsMount == 1:
+                    auxMont = auxMont1 + "0"
+                    amountReplaced = auxMont
+                else:
+                    auxMont = auxMont
+                body['data']['amount'] = auxMont
+            else:
+                amountReplaced = auxMont1 + ".00"
+                body['data']['amount'] = amountReplaced
+
             bodyAux = {
-                "req": str(body).replace("'",'"').replace(" ", "")
+                "req": str(body).replace("'",'"').replace(" ", "").replace(" ", "")
             }
+
+            if (amountReplaced):
+                arrayAmount = amountReplaced.split(".")
+                part1 = 'amount":"' + arrayAmount[0] + "."
+                part1Fix = 'amount":' + arrayAmount[0] + "."
+                part2 = "." +arrayAmount[1] + '"}'
+                part2Fix = '.' + arrayAmount[1] + "}"
+                bodyAux['req'] = bodyAux['req'].replace(part1,part1Fix).replace(part2,part2Fix)
+
             signatureHashed = hmac.new(bytes(str(secretKeyLoadedConfig) , 'latin-1'), msg = bytes(bodyAux["req"] , 'latin-1'), digestmod = hashlib.sha256).hexdigest()
+
             if str(signatureReceived) == str(signatureHashed):
                 return JsonResponse({"code": "100", "message": "Solicitud con datos válidos"}, status=status.HTTP_200_OK, safe=False)
             else:
