@@ -100,7 +100,7 @@
     
         <div class="siguienteLinea margenInferior5" >			
         <div class="etiqueta" >ID del Comercio (*)</div>
-        <input name="IDComercio" id="IDComercio" value="{% if IDComercioLoaded %}{{IDComercioLoaded}}{% else %}{{form.IDComercio.value}}{% endif %}"  
+        <input name="IDComercio" id="IDComercio" type="number" value="{% if IDComercioLoaded %}{{IDComercioLoaded}}{% else %}{{form.IDComercio.value}}{% endif %}"  
         
         type="text" class="cajaTexto ancho500" placeholder="Ingresa tu ID"  />
         <!-- {% if empty4 == "1" %}	 -->
@@ -120,7 +120,7 @@
         <div class="siguienteLinea margenInferior5" >
         <div class="etiqueta" >Email del Comercio (*)</div>
         <input name="EmailComercio" id="EmailComercio" value="{% if EmailComercioLoaded %}{{EmailComercioLoaded}}{% else %}{{form.EmailComercio.value}}{% endif %}" 
-        type="text" class="cajaTexto ancho500" placeholder="Email del comercio para envío de comunicaciones"  />	
+        class="cajaTexto ancho500" placeholder="Email del comercio para envío de comunicaciones"  />	
         <!-- {% if empty6 == "1" %}		 -->
         <!-- {% endif %}	 -->
         <div id="EmailComercioMensaje" class="mensajeRequerido" style="display: none;">Indique el email del comercio</div>
@@ -153,7 +153,7 @@
         
         <div class="siguienteLinea margenInferior5" >
         <div class="etiqueta" >Tiempo de expiración del Pago (*)</div>
-          <input name="TiempoExpiracionPago" id="TiempoExpiracionPago" value="{% if TiempoExpiracionPagoLoaded %}{{TiempoExpiracionPagoLoaded}}{% else %}{{form.TiempoExpiracionPago.value}}{% endif %}"
+          <input name="TiempoExpiracionPago" id="TiempoExpiracionPago" type="number" value="{% if TiempoExpiracionPagoLoaded %}{{TiempoExpiracionPagoLoaded}}{% else %}{{form.TiempoExpiracionPago.value}}{% endif %}"
           class="cajaTexto ancho300" placeholder="000"  /><div class="mensajePlaceholder" >Horas</div>
         <!-- {% if empty8 == "1" %}		 --> 
         <!-- {% endif %}	 -->
@@ -208,7 +208,7 @@
         <div class="alineado margenIzquierdo100 margenInferior5" >
         <div class="etiqueta"  >Monto (*)</div>
         <input name="Monto" id="Monto" value="{% if MontoLoaded %}{{MontoLoaded}}{% else %}{{form.Monto.value}}{% endif %}" 
-        type="text" class="cajaTexto ancho200" placeholder="" onkeyup="verificarMonto(event,this)" />
+        type="number" class="cajaTexto ancho200" placeholder="" />
         <!-- {% if empty11 == "1" %}		 --> 
         <!-- {% endif %}	 -->
         <div id="MontoMensaje" class="mensajeRequerido" style="display: none;">Ingresa un monto</div>
@@ -589,21 +589,35 @@
         }
       })
     }
-    
+    var isValid = false;
+    function validateFormat(email) {
+      if (email) {
+        if (email.indexOf("@") !== -1)
+         isValid = true
+        else isValid = false
+      }
+      return isValid;
+    }
     if (inputEmailComercio && inputEmailComercio[0]) {
       const input = inputEmailComercio[0];
-      if(inputEmailComercio[0].value.length == 0){
+      const resultValidation = this.validateFormat(inputEmailComercio[0].value)
+      btnConForm.disabled= true
+      if (resultValidation) btnConForm.disabled= false
+      if(inputEmailComercio[0].value.length == 0 || resultValidation === false){
           inputEmailComercio[0].style.border = "1px solid #ff0000";
           msgEmailComercio[0].style.display = "block";
       }
       input.addEventListener('input', evt => {
-        if (evt) {
-          if (evt.target.value.length === 0) {
+        if (evt) {          
+          const result = this.validateFormat(inputEmailComercio[0].value)
+          if (evt.target.value.length === 0 || result === false) {
+            btnConForm.disabled= true
             inputEmailComercio[0].style.border = "1px solid #ff0000";
             if (msgEmailComercio && msgEmailComercio[0]) {
               msgEmailComercio[0].style.display = "block"; 
             } 
           } else {
+          btnConForm.disabled= false
           inputEmailComercio[0].style.border = "1px solid #B3B3B3";
           if (msgEmailComercio && msgEmailComercio[0]) {
             msgEmailComercio[0].style.display = "none"; 
@@ -741,7 +755,6 @@
               btnConForm.style.display = "block"
               }
            } else {
-              console.log("selecciono peru")
               btnSinForm.style.display = "block"
               btnConForm.style.display = "none"
               var x = document.getElementById("optDefaultCurrency");
@@ -765,7 +778,6 @@
            }
            if (evt.target.value.length === 0) {
              if (msgPais && msgPais[0]) {
-               console.log("aparecer mensaje requerido")
                msgPais[0].style.display = "block"; 
              } 
            } else {
@@ -803,41 +815,24 @@
         }
       })
     }
-    function verificarMonto(evt,input){
-      const valueAmount = inputMonto[0]
-      const aux = valueAmount.value
-		  var key = window.Event ? evt.which : evt.keyCode;    
-	    var chark = String.fromCharCode(key);
-	    var tempValue = input.value+chark;
-
-	    if(key >= 48 && key <= 57 || key == 190 || key === 188){
-          console.log('is numer')
-	    }
-      else{
-        if (valueAmount.value.length > 0) {
-          result = filtro(valueAmount.value)
-    
-          if (!result) {
-           console.log(result)
-           console.log(inputMonto[0].value.length)
-           inputMonto[0].value = inputMonto[0].value.slice(0, -1);
+      inputMonto[0].addEventListener("keypress", function (evt) {
+          if (evt.which != 8 && evt.which != 0 && evt.which < 48 || evt.which > 57)
+          {
+              evt.preventDefault();
           }
-        }
-         else {
-        inputMonto[0].style.border = "1px solid red";
-        msgMonto[0].style.display = "block";
-         valueAmount.value = ""
-        }
-	    }
-	}
-    function filtro(valor){
-	    var preg = /^([0-9]+\.?[0-9]{0,2})$/; 
-	    if(preg.test(valor) === true){
-	        return true;
-	    }else{
-	       return false;
-	    }
-	}
+      });
+      inputComercio[0].addEventListener("keypress", function (evt) {
+          if (evt.which != 8 && evt.which != 0 && evt.which < 48 || evt.which > 57)
+          {
+              evt.preventDefault();
+          }
+      });
+      inputTiempoExp[0].addEventListener("keypress", function (evt) {
+          if (evt.which != 8 && evt.which != 0 && evt.which < 48 || evt.which > 57)
+          {
+              evt.preventDefault();
+          }
+      });
     </script>
 </body>
 

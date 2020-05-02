@@ -298,7 +298,12 @@
                     
                     <!-- fila7 -->
                         <div class="siguienteLinea margenIzquierdo60 margenSuperior10" >
-                            <input  id="btnGuardar" name="btnGuardar" type="submit"  class="botonPrincipal ancho150 margenSuperior30" value="Pagar" ></input>	
+                            {% if disabledButton == False %}
+                                <input  id="btnGuardar" name="btnGuardar" type="submit"  class="botonPrincipal ancho150 margenSuperior30" value="Pagar" ></input>	
+                            {% endif %}
+                            {% if disabledButton == True %}
+                                <button  id="btnGuardar" name="btnGuardar" disabled="true"  class="botonPrincipal ancho150 margenSuperior30">Pagar</button>	
+                            {% endif %}
                         </div>
                     <!-- fin de fila7 -->
                     

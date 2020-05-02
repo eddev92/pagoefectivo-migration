@@ -26,7 +26,11 @@ from rest_framework import status
 from django.http import JsonResponse
 from django.core import serializers
 from django.conf import settings
-from django.template.loader import get_template 
+from django.template.loader import get_template
+
+## tests
+# import unittest
+# import pycodestyle
 
 # FUNCION PARA GENERAR O HOME "/"
 @csrf_exempt
@@ -46,6 +50,7 @@ def index(request):
     modoIntegrationLoaded = ""
     urlServerLoaded = ""
     auxMoun = 0
+    disabledButton = True
         
     if request.COOKIES.get('ServidorPagoEfectivo'):
         urlServerLoaded = request.COOKIES['ServidorPagoEfectivo']
@@ -57,14 +62,28 @@ def index(request):
         countryLoaded  = request.COOKIES['pais']
     
     if request.COOKIES.get('TipoMoneda'):
-        currencyLoaded  = request.COOKIES['TipoMoneda']
-    
+        currencyLoaded  = request.COOKIES['TipoMoneda']    
     
     if request.COOKIES.get('Monto'):
         montoLoaded  = request.COOKIES['Monto']
+
+    if request.COOKIES.get('NombreComercio'):
+        NombreComercioLoaded  = request.COOKIES['NombreComercio']
     
     if request.COOKIES.get('EmailComercio'):
         emailLoaded  = request.COOKIES['EmailComercio']
+
+    if request.COOKIES.get('AccessKey'):
+        AccessKeyLoaded  = request.COOKIES['AccessKey']
+
+    if request.COOKIES.get('SecretKey'):
+        SecretKeyLoaded  = request.COOKIES['SecretKey']
+
+    if request.COOKIES.get('IDComercio'):
+        IDComercioLoaded  = request.COOKIES['IDComercio']
+
+    if request.COOKIES.get('TiempoExpiracionPago'):
+        timeExpiration  = request.COOKIES['TiempoExpiracionPago']
 
     auxMoun = re.sub("^(-?\d+)(\d{3})", '\g<1>,\g<2>', montoLoaded)
 
@@ -74,23 +93,17 @@ def index(request):
         auxMontGenerate = ""
 
     if request.method == "GET":
-        context = {"esPostBack": esPostBack, "country": countryLoaded, "montoFromConfg": auxMontGenerate, "currencyLoaded": currencyLoaded}
+        if urlServerLoaded and modoIntegrationLoaded and countryLoaded and currencyLoaded and montoLoaded and NombreComercioLoaded and emailLoaded and AccessKeyLoaded and SecretKeyLoaded and IDComercioLoaded and timeExpiration:
+            print("TODOS COMPLETOS")
+            disabledButton = False
+        else: print("FALTAN")
+        print("AQUI")
+        context = {"esPostBack": esPostBack, "country": countryLoaded, "montoFromConfg": auxMontGenerate, "currencyLoaded": currencyLoaded, "disabledButton": disabledButton}
         response = render(request, 'weather/weather.html', context)
         return response
     
     if request.method == 'POST':
         if request.POST.get("btnGuardar"):
-            if request.COOKIES.get('AccessKey'):
-                AccessKeyLoaded  = request.COOKIES['AccessKey']
-
-            if request.COOKIES.get('SecretKey'):
-                SecretKeyLoaded  = request.COOKIES['SecretKey']
-
-            if request.COOKIES.get('IDComercio'):
-                IDComercioLoaded  = request.COOKIES['IDComercio']
-
-            if request.COOKIES.get('TiempoExpiracionPago'):
-                timeExpiration  = request.COOKIES['TiempoExpiracionPago']
 
             # print(dateFinalFormated, "datetime.now() HORA EXACTA DE LA GENERACION DEL PROCESO")
             dateNowAddTimeToExpiration = datetime.now((pytz.timezone('America/Lima')))
@@ -127,7 +140,6 @@ def index(request):
                 headers_data = { 
                     'Content-Type': 'application/json; charset=UTF-8',
                 }
-                
                 # LLAMADA AL SERVICIO /AUTHORIZATIONS
                 response = requests.post('https://pre1a.services.pagoefectivo.pe/v1/authorizations', json=bodyAuthorization, headers=headers_data)
                 print(response.status_code, "response.status_code AUTHORIZATION")
@@ -164,7 +176,6 @@ def index(request):
                             "userPhone": "9988776650",
                             "serviceId": int(IDComercioLoaded)
                         }
-
                         # LLAMADA AL SERVICIO /CIPS
                         responseCips = requests.post('https://pre1a.services.pagoefectivo.pe/v1/cips', json=bodyCips, headers=headers_data_cip)
                         print(responseCips.status_code, "status_code /cips")
