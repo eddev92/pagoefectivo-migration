@@ -68,41 +68,41 @@ _El proyecto va abrir en la siguiente ruta "http://127.0.0.1:8000/", copiar y pe
 _Este API de tipo POST, se puede utilizar desde POSTMAN con las siguiente credenciales._
 
 ```
-	1 HEADER:
+1 HEADER:
 ```
 ```
-	1.2 { 
-		key: "PE-Signature",
-		value: {{signature}}
+1.2 { 
+	key: "PE-Signature",
+	value: {{signature}}
+}
+```
+
+```
+2 BODY
+```
+
+```
+2.1 { 
+		"eventType":"cip.paid",
+		"operationNumber":{{}},
+		"data":{
+			"cip":{{}},
+			"currency":{{}}",
+			"amount":{{}}
 	}
+}
 ```
 
 ```
-	2 BODY
+3 RESPONSE
 ```
 
 ```
-	2.1 { 
-			"eventType":"cip.paid",
-			"operationNumber":{{}},
-			"data":{
-				"cip":{{}},
-				"currency":{{}}",
-				"amount":{{}}
-			}
-		 }
-```
-
-```
-	3 RESPONSE
-```
-
-```
-	3.1 STATUS OK
+3.1 STATUS OK
 	response: {
 	"code": "100",
 	"message": "Solicitud con datos válidos"
-	}
+}
 ```
 
 ```
@@ -110,7 +110,7 @@ _Este API de tipo POST, se puede utilizar desde POSTMAN con las siguiente creden
 	response: {
 	"code": "111",
 	"message": "Solicitud con datos inválidos"
-	}
+}
 		
-		html: "weather/empty.html"
+	html: "weather/empty.html"
 ```
