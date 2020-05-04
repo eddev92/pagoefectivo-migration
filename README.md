@@ -107,8 +107,10 @@ _Este API de tipo POST, se puede utilizar desde POSTMAN con las siguiente creden
 
 ```
 	3.2 STATUS 500_INTERNAL_SERVER_ERROR
-	response: {
-							"code": "111",
-							"message": "Solicitud con datos inválidos"
-						}
+		response: {
+								"code": "111",
+								"message": "Solicitud con datos inválidos"
+							}
+		
+		html: "weather/empty.html"
 ```
