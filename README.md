@@ -103,6 +103,7 @@ _Este API de tipo POST, se puede utilizar desde POSTMAN con las siguiente creden
 	"code": "100",
 	"message": "Solicitud con datos válidos"
 }
+status: 200
 ```
 
 ```
@@ -113,4 +114,5 @@ _Este API de tipo POST, se puede utilizar desde POSTMAN con las siguiente creden
 }
 		
 	html: "weather/empty.html"
+	status: 500
 ```
