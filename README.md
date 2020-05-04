@@ -72,8 +72,8 @@ _Este API de tipo POST, se puede utilizar desde POSTMAN con las siguiente creden
 ```
 ```
 1.2 { 
-	key: "PE-Signature",
-	value: {{signature}}
+key: "PE-Signature",
+value: {{signature}}
 }
 ```
 
@@ -83,12 +83,12 @@ _Este API de tipo POST, se puede utilizar desde POSTMAN con las siguiente creden
 
 ```
 2.1 { 
-		"eventType":"cip.paid",
-		"operationNumber":{{}},
-		"data":{
-			"cip":{{}},
-			"currency":{{}}",
-			"amount":{{}}
+"eventType":"cip.paid",
+"operationNumber":{{}},
+"data":{
+	"cip":{{}},
+	"currency":{{}}",
+	"amount":{{}}
 	}
 }
 ```
@@ -99,20 +99,20 @@ _Este API de tipo POST, se puede utilizar desde POSTMAN con las siguiente creden
 
 ```
 3.1 STATUS OK
-	response: {
-	"code": "100",
-	"message": "Solicitud con datos válidos"
+response: {
+"code": "100",
+"message": "Solicitud con datos válidos"
 }
 status: 200
 ```
 
 ```
 3.2 STATUS 500_INTERNAL_SERVER_ERROR
-	response: {
-	"code": "111",
-	"message": "Solicitud con datos inválidos"
+response: {
+"code": "111",
+"message": "Solicitud con datos inválidos"
 }
 		
-	html: "weather/empty.html"
-	status: 500
+html: "weather/empty.html"
+status: 500
 ```
