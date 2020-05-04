@@ -37,6 +37,10 @@ _Ubicarse en la raiz del proyecto, a la altura del archivo "manage.py" y ejecuta
 ```
 
 ```
+	- pip install requests
+```
+
+```
 	- pip install beautifulsoup4
 ```
 
@@ -56,5 +60,9 @@ _Ejecutar los siguientes en el terminal_
 	- python manage.py runserver
 ```
 ## Visualización
+
+_El proyecto va abrir en la siguiente ruta "http://127.0.0.1:8000/", copiar y pegar en el navegador._
+
+## API (/validations)
 
 _El proyecto va abrir en la siguiente ruta "http://127.0.0.1:8000/", copiar y pegar en el navegador._
