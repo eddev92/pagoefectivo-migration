@@ -63,15 +63,18 @@ _Ejecutar los siguientes en el terminal_
 
 _El proyecto va abrir en la siguiente ruta "http://127.0.0.1:8000/", copiar y pegar en el navegador._
 
-## API (/validations)
+## API (@api_view(["GET", "POST"]), "/validations")
 
-_Este API se puede utilizar desde POSTMAN con las siguiente credenciales._
+_Este API de tipo POST, se puede utilizar desde POSTMAN con las siguiente credenciales._
 
 ```
 	1 HEADER:
 ```
 ```
-	1.2 { key: "PE-Signature", value: {{signature}} }
+	1.2 { 
+		key: "PE-Signature",
+		value: {{signature}}
+	}
 ```
 
 ```
@@ -80,10 +83,12 @@ _Este API se puede utilizar desde POSTMAN con las siguiente credenciales._
 
 ```
 	2.1 { 
-		"eventType":"cip.paid",
-		"operationNumber":{{}},
-		"data":{"cip":{{}},
-		"currency":{{}}",
-		"amount":{{}}}
+			"eventType":"cip.paid",
+			"operationNumber":{{}},
+			"data":{
+				"cip":{{}},
+				"currency":{{}}",
+				"amount":{{}}
+			}
 		 }
 ```
