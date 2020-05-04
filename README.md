@@ -65,4 +65,25 @@ _El proyecto va abrir en la siguiente ruta "http://127.0.0.1:8000/", copiar y pe
 
 ## API (/validations)
 
-_El proyecto va abrir en la siguiente ruta "http://127.0.0.1:8000/", copiar y pegar en el navegador._
+_Este API se puede utilizar desde POSTMAN con las siguiente credenciales._
+
+```
+	1 HEADER:
+```
+```
+	1.2 { key: "PE-Signature", value: {{signature}} }
+```
+
+```
+	2 BODY
+```
+
+```
+	2.1 { 
+		"eventType":"cip.paid",
+		"operationNumber":{{}},
+		"data":{"cip":{{}},
+		"currency":{{}}",
+		"amount":{{}}}
+		 }
+```
