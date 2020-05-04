@@ -63,7 +63,7 @@ _Ejecutar los siguientes en el terminal_
 
 _El proyecto va abrir en la siguiente ruta "http://127.0.0.1:8000/", copiar y pegar en el navegador._
 
-## API (@api_view(["GET", "POST"]), "/validations")
+## API (@api_view(["GET", "POST"]), "http://127.0.0.1:8000/validation")
 
 _Este API de tipo POST, se puede utilizar desde POSTMAN con las siguiente credenciales._
 
