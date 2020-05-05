@@ -208,7 +208,7 @@
         <div class="alineado margenIzquierdo100 margenInferior5" >
         <div class="etiqueta"  >Monto (*)</div>
         <input name="Monto" id="Monto" value="{% if MontoLoaded %}{{MontoLoaded}}{% else %}{{form.Monto.value}}{% endif %}" 
-        type="number" class="cajaTexto ancho200" placeholder="" />
+        type="text" class="cajaTexto ancho200" placeholder="" />
         <!-- {% if empty11 == "1" %}		 --> 
         <!-- {% endif %}	 -->
         <div id="MontoMensaje" class="mensajeRequerido" style="display: none;">Ingresa un monto</div>
@@ -816,7 +816,7 @@
       })
     }
       inputMonto[0].addEventListener("keypress", function (evt) {
-          if (evt.which != 8 && evt.which != 0 && evt.which < 48 || evt.which > 57)
+          if (evt.which != 8 && evt.which != 0 && evt.which < 46 || evt.which > 57 || evt.which === 47  )
           {
               evt.preventDefault();
           }
